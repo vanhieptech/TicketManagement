@@ -4,7 +4,7 @@ const Schema = monggose.Schema;
 const UserSchema = new Schema({
     name: {
         type: String,
-        required: [true, 'Name is required']
+        required: [true, 'Name is required'],
     },
     phone: {
         type: String,
