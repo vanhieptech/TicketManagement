@@ -2,12 +2,20 @@ var express = require("express");
 var router = express.Router();
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const swaggerOptions = require('./apidoc');
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+router.use('/api-docs', swaggerUi.serve);
+router.get('/api-docs', swaggerUi.setup(swaggerDocs));
+
 /* GET users listing. */
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 
-/* POST create a User */
+/* POST create new user */
 router.post("/register", async (req, res, next) => {
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -35,7 +43,7 @@ router.post("/register", async (req, res, next) => {
     .catch(next);
 });
 
-/*POST log in as a user */
+/* POST login with account */
 router.post("/login", async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -49,7 +57,7 @@ router.post("/login", async (req, res, next) => {
       let isMatched = bcrypt.compareSync(req.body.password, user.password);
       if (isMatched) {
         res.status(200).send({
-          success: false,
+          success: true,
           code: 200,
           msg: "Login successfully",
           data: user
