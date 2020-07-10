@@ -23,8 +23,8 @@ router.post("/register", (req, res, next) => {
       .then(() => {
         res.status(200).send({
           success: true,
-          code: 200,
-          msg: "User added",
+          code: 201,
+          msg: "User created",
         });
       })
       .catch(next);
