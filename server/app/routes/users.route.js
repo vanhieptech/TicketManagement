@@ -9,7 +9,7 @@ router.get("/", function (req, res, next) {
 });
 
 /* POST create new user */
-router.post("/register", async (req, res, next) => {
+router.post("/signup", async (req, res, next) => {
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
   req.body.password = hashedPassword;

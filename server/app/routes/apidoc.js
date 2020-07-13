@@ -15,7 +15,7 @@ module.exports = swaggerOptions;
 
 /**
  * @swagger
- * /users/register:
+ * /users/signup:
  *    post:
  *     tags: ["User"]
  *     description: Create new user
