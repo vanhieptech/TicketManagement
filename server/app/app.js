@@ -19,9 +19,6 @@ require('./middlewares/locals.mdw')(app);
 require('./middlewares/routes.mdw')(app);
 
 
-
-
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -44,14 +41,10 @@ app.listen(process.env.port || 3000, () => {
 
 
 //Connect to mongodb
-mongoose
-  .connect('mongodb://localhost/ticketmanagement', {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  })
-  .then(() => console.log('DB Connected!'))
-  .catch(err => {
-    console.log(`DB Connection Error: ${err.message}`);
-  });
-mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/ticketmanagement', { useUnifiedTopology: true, useNewUrlParser: true });
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log('Connect to db successfully')
+});
 module.exports = app;
