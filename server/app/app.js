@@ -41,7 +41,10 @@ app.listen(process.env.port || 3000, () => {
 
 
 //Connect to mongodb
-mongoose.connect('mongodb://localhost/ticketmanagement', { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose
+.connect('mongodb://localhost/ticketmanagement', { useUnifiedTopology: true, useNewUrlParser: true })
+.catch(err => console.log(err));
+
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
