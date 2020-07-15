@@ -1,0 +1,19 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "Đồ án bán vé máy bay môn thiết kế phần mềm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vanhiep184/TicketManagement.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vanhiep184/TicketManagement/issues"
+  },
+  "homepage": "https://github.com/vanhiep184/TicketManagement#readme"
+}
