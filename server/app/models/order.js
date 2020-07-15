@@ -17,7 +17,9 @@ const OrderSchema = new Schema({
         required: [true, 'Status is required']
     },
     user: { type: Schema.Types.ObjectId, ref: 'user' },
-    payment: { type: Schema.Types.ObjectId, ref: 'payment' }
+    flight: { type: Schema.Types.ObjectId, ref: 'flight' },
+    tickets: [{ type: Schema.Types.ObjectId, ref: 'ticket' }],
+    payment: { type: Schema.Types.ObjectId, ref: 'payment' },
 });
 
 const Order = monggose.model('order', OrderSchema);

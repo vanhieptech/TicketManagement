@@ -5,15 +5,21 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 var app = express();
 
 //Middlewares
 app.use(logger('dev'));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+
+
+
+
 
 require('./middlewares/locals.mdw')(app);
 require('./middlewares/routes.mdw')(app);
@@ -26,24 +32,28 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // // set locals, only providing error in development
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // // render the error page
+  // res.status(err.status || 500);
+  // res.render('error');
   res.status(err.status || 500);
-  res.render('error');
+  res.json({
+    error: err.message
+  });
 });
 
-app.listen(process.env.port || 3000, () => {
-  console.log(`Server running at http://localhost:3000`);
+app.listen(process.env.port || 4000, () => {
+  console.log(`Server running at http://localhost:4000`);
 })
 
 
 //Connect to mongodb
 mongoose
-.connect('mongodb://localhost/ticketmanagement', { useUnifiedTopology: true, useNewUrlParser: true })
-.catch(err => console.log(err));
+  .connect('mongodb://localhost/ticketmanagement', { useUnifiedTopology: true, useNewUrlParser: true })
+  .catch(err => console.log(err));
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

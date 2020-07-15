@@ -6,15 +6,20 @@ const PassengerSchema = new Schema({
         type: String,
         required: [true, 'PassengerName is required'],
         //Tối thiểu phải 6 ký tự
-        minlength: [6,'Name must have at least 6 character']
+        minlength: [6, 'Name must have at least 6 character']
+    },
+    id_card: {
+        type: String,
+        required: [true, 'identity card is required'],
+        minlength: [6, 'Name must have at least 6 character']
     },
     dob: {
         type: Date,
         required: [true, 'DOB is required'],
         // Nhỏ nhất phải 18 tuổi
-        max: function (){
+        max: function () {
             var date = moment();
-            date.set('year',date.get('year') - 18)
+            date.set('year', date.get('year') - 18)
             return date.isAfter(this.dob);
         }
     },
@@ -23,12 +28,10 @@ const PassengerSchema = new Schema({
         required: [true, 'Luggage is required']
     },
     extra_luggage: {
-        type: Number,
-        required: [true, 'Extra_luggage is required']
+        type: Number
     },
     priority_boarding: {
-        type: Number,
-        required: [true, 'Priority_boarding is required']
+        type: Number
     }
 });
 

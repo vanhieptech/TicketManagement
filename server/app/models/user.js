@@ -7,13 +7,13 @@ const UserSchema = new Schema({
         type: String,
         required: [true, 'Name is required'],
         //Tối thiểu phải 6 ký tự
-        minlength: [6,'Name must have at least 6 character']
+        minlength: [6, 'Name must have at least 6 character']
     },
     phone: {
         type: String,
         required: [true, 'Phone is required'],
         //Tối thiểu phải 10 số
-        minlength: [10,'Phone must have at least 10 numbers']
+        minlength: [10, 'Phone must have at least 10 numbers']
     },
     email: {
         type: String,
@@ -25,9 +25,9 @@ const UserSchema = new Schema({
         type: Date,
         required: [true, 'Birth day is required'],
         // Nhỏ nhất phải 18 tuổi
-        max: function (){
+        max: function () {
             var date = moment();
-            date.set('year',date.get('year') - 18)
+            date.set('year', date.get('year') - 18)
             return date.isAfter(this.dob);
         }
     },
@@ -38,7 +38,7 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: [true, 'Password is required'],
-        minlength: [8,'Password must have at least 8 character']
+        minlength: [8, 'Password must have at least 8 character']
     }
 });
 
