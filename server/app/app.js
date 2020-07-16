@@ -19,8 +19,6 @@ app.use(bodyParser.json());
 
 
 
-
-
 require('./middlewares/locals.mdw')(app);
 require('./middlewares/routes.mdw')(app);
 

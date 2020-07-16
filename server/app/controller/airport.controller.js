@@ -1,29 +1,16 @@
-const Flight = require('../models/flight');
+const Airport = require('../models/airport');
 const moment = require('moment');
 
 module.exports = {
-    getFlights: (req, res) => {
-        Flight
+    getAirports: (req, res) => {
+        Airport
             .find()
-            .select('_id code take_off landing')
+            .select('_id code name location')
             .exec()
             .then(docs => {
-                if (docs === undefined) {
-                    res.status(200).json({
-                        count: docs.length,
-                        flights: []
-                    })
-                }
                 const response = {
                     count: docs.length,
-                    flights: docs.map(doc => {
-                        return {
-                            _id: doc._id,
-                            code: doc.code,
-                            take_off: doc.take_off,
-                            landing: doc.landing
-                        }
-                    })
+                    airports: docs
                 }
                 res.status(200).json(response);
             })
@@ -34,20 +21,15 @@ module.exports = {
                 })
             })
     },
-    getFlight: (req, res) => {
+    getAirport: (req, res) => {
         const id = req.params.id;
-        Flight
+        Airport
             .findById(id)
-            .select('_id code take_off landing')
+            .select('_id code name location')
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json({
-                        _id: doc._id,
-                        code: doc.code,
-                        take_off: doc.take_off,
-                        landing: doc.landing
-                    });
+                    res.status(200).json(doc);
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -60,20 +42,20 @@ module.exports = {
                 })
             });
     },
-    postFlight: (req, res) => {
-        const flight = new Flight({
+    postAirport: (req, res) => {
+        const airport = new Airport({
             code: req.body.code,
-            take_off: moment.utc(req.body.take_off, 'DD-MM-YYYY HH:mm:ss'),
-            landing: moment.utc(req.body.landing, 'DD-MM-YYYY HH:mm:ss')
+            name: req.body.name,
+            location: req.body.location
         });
-        flight.save().then(result => {
+        airport.save().then(result => {
             res.status(201).json({
-                message: "Flight created successfully",
-                createdFlight: {
+                message: "Airport created successfully",
+                createdAirport: {
                     _id: result._id,
                     code: result.code,
-                    take_off: result.take_off,
-                    landing: result.landing
+                    name: result.name,
+                    location: result.location
                 }
             })
         }).catch(err => {
@@ -84,23 +66,23 @@ module.exports = {
         });
 
     },
-    deleteFlight: (req, res) => {
+    deleteAirport: (req, res) => {
         const id = req.params.id;
-        Flight
+        Airport
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code take_off landing')
+            .select('_id code name location')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Flight deleted successfully',
-                    deletedFlight: doc,
+                    message: 'Airport deleted successfully',
+                    deletedAirport: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/flight',
+                        url: 'http://localhost:4000/airport',
                         body: {
                             code: 'String',
-                            take_off: 'Date',
-                            landing: 'Date'
+                            name: 'String',
+                            location: 'String'
                         }
                     }
                 });
@@ -112,26 +94,22 @@ module.exports = {
                 })
             });
     },
-    putFlight: (req, res) => {
+    putAirport: (req, res) => {
         const id = req.params.id;
         const updateOps = {};
         for (const ops of req.body) {
-            if(ops.propName !== "take_off" && ops.propName !== "landing"){
-                updateOps[ops.propName] = ops.value;
-            }else{
-                updateOps[ops.propName] = moment.utc(ops.value,'DD-MM-YYYY HH:mm:ss');
-            }
+            updateOps[ops.propName] = ops.value;
         }
-        Flight.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false})
-            .select('_id code take_off landing')
+        Airport.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
+            .select('_id code name location')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Flight updated successfully',
-                    updatedFlight: doc,
+                    message: 'Airport updated successfully',
+                    updatedAirport: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/flight/' + doc._id
+                        url: 'http://localhost:4000/airport/' + doc._id
                     }
                 })
             })
