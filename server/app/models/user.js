@@ -25,11 +25,11 @@ const UserSchema = new Schema({
         type: Date,
         required: [true, 'Birth day is required'],
         // Nhỏ nhất phải 18 tuổi
-        max: function () {
-            var date = moment();
-            date.set('year', date.get('year') - 18)
-            return date.isAfter(this.dob);
-        }
+        // max: function () {
+        //     var date = moment();
+        //     date.set('year', date.get('year') - 18)
+        //     return date.isAfter(this.dob);
+        // }
     },
     gender: {
         type: String,
