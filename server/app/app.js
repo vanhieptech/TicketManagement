@@ -19,8 +19,6 @@ app.use(bodyParser.json());
 
 
 
-
-
 require('./middlewares/locals.mdw')(app);
 require('./middlewares/routes.mdw')(app);
 
@@ -52,7 +50,8 @@ app.listen(process.env.port || 4000, () => {
 
 //Connect to mongodb
 mongoose
-  .connect('mongodb://localhost/ticketmanagement', { useUnifiedTopology: true, useNewUrlParser: true })
+  .connect('mongodb+srv://usermongodb:usermongopassword@ticketmanagement.kto9n.mongodb.net/ticketmanangement?retryWrites=true&w=majority',
+   { useUnifiedTopology: true, useNewUrlParser: true })
   .catch(err => console.log(err));
 
 const db = mongoose.connection;
