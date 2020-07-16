@@ -1,17 +1,3 @@
-const swaggerOptions = {
-    swaggerDefinition: {
-      info: {
-        title: 'Ticket Management API',
-        description: 'Base URL: localhost:3000',
-        contact: {
-          name: 'Amazing'
-        },
-        servers: ['localhost:3000']
-      }
-    },
-    apis: ['../routes/*.js']
-  };
-module.exports = swaggerOptions;
 
 /**
  * @swagger
@@ -22,7 +8,7 @@ module.exports = swaggerOptions;
  *     parameters:
  *        - in: "body"
  *          name: name
- *          description: String
+ *          description: String (more than 8 charaters)
  *        - in: "body"
  *          name: phone
  *          description: String
