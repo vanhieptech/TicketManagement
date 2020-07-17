@@ -1,16 +1,16 @@
-const Airport = require('../models/airport');
+const Airline = require('../models/airline');
 const moment = require('moment');
 
 module.exports = {
-    getAirports: (req, res) => {
-        Airport
+    getAirlines: (req, res) => {
+        Airline
             .find()
-            .select('_id code name location')
+            .select('_id name logo')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    airports: docs
+                    airlines: docs
                 }
                 res.status(200).json(response);
             })
@@ -21,11 +21,11 @@ module.exports = {
                 })
             })
     },
-    getAirport: (req, res) => {
+    getAirline: (req, res) => {
         const id = req.params.id;
-        Airport
+        Airline
             .findById(id)
-            .select('_id code name location')
+            .select('_id name logo')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -42,16 +42,16 @@ module.exports = {
                 })
             });
     },
-    postAirport: (req, res) => {
-        const airport = new Airport({
+    postAirline: (req, res) => {
+        const airline = new Airline({
             code: req.body.code,
             name: req.body.name,
             location: req.body.location
         });
-        airport.save().then(result => {
+        airline.save().then(result => {
             res.status(201).json({
-                message: "Airport created successfully",
-                createdAirport: {
+                message: "Airline created successfully",
+                createdAirline: {
                     _id: result._id,
                     code: result.code,
                     name: result.name,
@@ -59,7 +59,7 @@ module.exports = {
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/airport/' + result._id,
+                    url: 'http://localhost:4000/api/airline/' + result._id,
                 }
             })
         }).catch(err => {
@@ -70,21 +70,20 @@ module.exports = {
         });
 
     },
-    deleteAirport: (req, res) => {
+    deleteAirline: (req, res) => {
         const id = req.params.id;
-        Airport
+        Airline
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+            .select('_id name logo')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport deleted successfully',
-                    deletedAirport: doc,
+                    message: 'Airline deleted successfully',
+                    deletedAirline: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/airport',
+                        url: 'http://localhost:4000/api/airline',
                         body: {
-                            code: 'String',
                             name: 'String',
                             location: 'String'
                         }
@@ -98,22 +97,22 @@ module.exports = {
                 })
             });
     },
-    putAirport: (req, res) => {
+    putAirline: (req, res) => {
         const id = req.params.id;
         const updateOps = {};
         for (const ops of req.body) {
             updateOps[ops.propName] = ops.value;
         }
-        Airport.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
+        Airline.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
             .select('_id code name location')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport updated successfully',
-                    updatedAirport: doc,
+                    message: 'Airline updated successfully',
+                    updatedAirline: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/airport/' + doc._id
+                        url: 'http://localhost:4000/api/airline/' + doc._id
                     }
                 })
             })

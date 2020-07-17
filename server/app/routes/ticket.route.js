@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controller/ticket.controller')
+const controller = require('../controller/seat.controller')
 // const Ticket = require('../models/ticket');
 
-//GET /ticket
+//GET /api/ticket
 router.get('/',controller.getTicket);
 
 //POST /api/ticket

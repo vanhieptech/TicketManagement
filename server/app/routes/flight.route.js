@@ -3,19 +3,19 @@ const router = express.Router();
 const controller = require('../controller/flight.controller')
 
 
-//GET /flight
+//GET /api/flight
 router.get('/',controller.getFlights);
 
-//GET /flight/:id
+//GET /api/flight/:id
 router.get('/:id',controller.getFlight);
 
-//POST /flight
+//POST /api/flight
 router.post('/', controller.postFlight);
 
-//PUT /flight
+//PUT /api/flight
 router.put('/:id', controller.putFlight);
 
-//DELETE /flight
+//DELETE /api/flight
 router.delete('/:id', controller.deleteFlight);
 
 

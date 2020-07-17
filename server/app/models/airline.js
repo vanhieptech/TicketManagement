@@ -4,11 +4,12 @@ const Schema = monggose.Schema;
 const AirlineSchema = new Schema({
     name: {
         type: String,
-        required: [true, 'Airline_name is required']
+        required: [true, 'Airline_name is required'],
+        unique: true
     },
     logo: {
         type: Number,
-        required: [true, 'Airline_logo is required']
+        // required: [true, 'Airline_logo is required']
     }
 });
 

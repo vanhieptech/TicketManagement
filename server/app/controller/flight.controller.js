@@ -64,7 +64,11 @@ module.exports = {
         const flight = new Flight({
             code: req.body.code,
             take_off: moment.utc(req.body.take_off, 'DD-MM-YYYY HH:mm:ss'),
-            landing: moment.utc(req.body.landing, 'DD-MM-YYYY HH:mm:ss')
+            landing: moment.utc(req.body.landing, 'DD-MM-YYYY HH:mm:ss'),
+            departure: req.body.departure,
+            arrival: req.body.arrival,
+            pit_stop: req.body.pit_stop,
+            aircraft: req.body.aircraft
         });
         flight.save().then(result => {
             res.status(201).json({
@@ -73,7 +77,14 @@ module.exports = {
                     _id: result._id,
                     code: result.code,
                     take_off: result.take_off,
-                    landing: result.landing
+                    landing: result.landing,
+                    arrival: result.arrival,
+                    pit_stop: result.pit_stop,
+                    aircraft: result.aircraft
+                },
+                request: {
+                    type: 'GET',
+                    url: 'http://localhost:4000/api/flight/' + result._id,
                 }
             })
         }).catch(err => {
@@ -96,7 +107,7 @@ module.exports = {
                     deletedFlight: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/flight',
+                        url: 'http://localhost:4000/api/flight',
                         body: {
                             code: 'String',
                             take_off: 'Date',
@@ -116,13 +127,13 @@ module.exports = {
         const id = req.params.id;
         const updateOps = {};
         for (const ops of req.body) {
-            if(ops.propName !== "take_off" && ops.propName !== "landing"){
+            if (ops.propName !== "take_off" && ops.propName !== "landing") {
                 updateOps[ops.propName] = ops.value;
-            }else{
-                updateOps[ops.propName] = moment.utc(ops.value,'DD-MM-YYYY HH:mm:ss');
+            } else {
+                updateOps[ops.propName] = moment.utc(ops.value, 'DD-MM-YYYY HH:mm:ss');
             }
         }
-        Flight.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false})
+        Flight.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
             .select('_id code take_off landing')
             .exec()
             .then(doc => {
@@ -131,7 +142,7 @@ module.exports = {
                     updatedFlight: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/flight/' + doc._id
+                        url: 'http://localhost:4000/api/flight/' + doc._id
                     }
                 })
             })

@@ -1,16 +1,20 @@
-const Airport = require('../models/airport');
+const Aircraft = require('../models/aircraft');
 const moment = require('moment');
+const mongoose = require('mongoose');
+const Seat = require('../models/seat');
+const { all } = require('../routes/home.route');
 
 module.exports = {
-    getAirports: (req, res) => {
-        Airport
+    getAircrafts: (req, res) => {
+        Aircraft
             .find()
-            .select('_id code name location')
+            .select('_id code airline seats')
+            .populate('seats','_id type price seat_number aircraft')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    airports: docs
+                    aircraft: docs
                 }
                 res.status(200).json(response);
             })
@@ -21,11 +25,12 @@ module.exports = {
                 })
             })
     },
-    getAirport: (req, res) => {
+    getAircraft: (req, res) => {
         const id = req.params.id;
-        Airport
+        Aircraft
             .findById(id)
             .select('_id code name location')
+            .populate('seats','_id type price seat_number aircraft')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -42,24 +47,52 @@ module.exports = {
                 })
             });
     },
-    postAirport: (req, res) => {
-        const airport = new Airport({
+    postAircraft: (req, res) => {
+        const aircraft = new Aircraft({
+            _id: new mongoose.Types.ObjectId(),
             code: req.body.code,
-            name: req.body.name,
-            location: req.body.location
+            airline: req.body.airline,
         });
-        airport.save().then(result => {
+        aircraft.save().then(result => {
+            // Tạo và lưu seats trong aircraft
+            const seat_numbers = ['A1', 'A2', 'A3', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2', 'D3', 'E1', 'E2', 'E3',
+                'F1', 'F2', 'F3', 'G1', 'G2', 'G3', 'H1', 'H2', 'H3', 'I1', 'I2', 'I3', 'J1', 'J2', 'J3'];
+            for (i = 0; i < seat_numbers.length; i++) {
+                let flag = 0; // Hạng ghế phổ thông
+                if (seat_numbers[i].endsWith('1')) { // Hạng ghế thương gia
+                    flag = 1;
+                }
+                const seat = new Seat({
+                    type: flag === 1 ? 'Thương gia' : 'Phổ thông',
+                    price: flag === 1 ? '1000000' : '500000',
+                    seat_number: seat_numbers[i],
+                    aircraft: result._id
+                });
+                seat.save().then(seat => {
+                    console.log('seat ' + seat.seat_number + ' saved');
+                }).catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        error: err
+                    })
+                });
+                result.seats.push({ _id: seat._id });
+            }
+            //Lưu seats thành công
+            return result.save();
+        }).then(result => {
+            //Success
             res.status(201).json({
-                message: "Airport created successfully",
-                createdAirport: {
+                message: "Aircraft created successfully",
+                createdAircraft: {
                     _id: result._id,
                     code: result.code,
-                    name: result.name,
-                    location: result.location
+                    airline: result.airline,
+                    seats: result.seats
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/airport/' + result._id,
+                    url: 'http://localhost:4000/api/aircraft/' + result._id,
                 }
             })
         }).catch(err => {
@@ -70,16 +103,16 @@ module.exports = {
         });
 
     },
-    deleteAirport: (req, res) => {
+    deleteAircraft: (req, res) => {
         const id = req.params.id;
-        Airport
+        Aircraft
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
             .select('_id code name location')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport deleted successfully',
-                    deletedAirport: doc,
+                    message: 'Aircraft deleted successfully',
+                    deletedAircraft: doc,
                     request: {
                         type: 'POST',
                         url: 'http://localhost:4000/api/airport',
@@ -98,19 +131,19 @@ module.exports = {
                 })
             });
     },
-    putAirport: (req, res) => {
+    putAircraft: (req, res) => {
         const id = req.params.id;
         const updateOps = {};
         for (const ops of req.body) {
             updateOps[ops.propName] = ops.value;
         }
-        Airport.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
+        Aircraft.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
             .select('_id code name location')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport updated successfully',
-                    updatedAirport: doc,
+                    message: 'Aircraft updated successfully',
+                    updatedAircraft: doc,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:4000/api/airport/' + doc._id
