@@ -51,7 +51,7 @@ app.listen(process.env.port || 4000, () => {
 //Connect to mongodb
 mongoose
   .connect('mongodb+srv://usermongodb:usermongopassword@ticketmanagement.kto9n.mongodb.net/ticketmanangement?retryWrites=true&w=majority',
-   { useUnifiedTopology: true, useNewUrlParser: true })
+   { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true})
   .catch(err => console.log(err));
 
 const db = mongoose.connection;

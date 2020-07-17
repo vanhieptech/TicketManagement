@@ -2,7 +2,6 @@ const monggose = require('mongoose');
 const Schema = monggose.Schema;
 
 const SeatSchema = new Schema({
-    flight: { type: Schema.Types.ObjectId, ref: 'flight' },
     type: {
         type: String,
         required: [true, 'type is required']
@@ -12,8 +11,13 @@ const SeatSchema = new Schema({
         required: [true, 'price is required']
     },
     seat_number: {
-        type: Number,
+        type: String,
         required: [true, 'seatnumber is required']
+    },
+    aircraft: {
+        type: Schema.Types.ObjectId,
+        ref: 'aircraft',
+        required: true,
     }
 });
 

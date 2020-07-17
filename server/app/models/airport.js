@@ -5,7 +5,8 @@ const AirportSchema = new Schema({
     code: {
         type: String,
         required: [true, 'Airport_code is required'],
-        maxlength: [10,'Code max length is 10']
+        maxlength: [10,'Code max length is 10'],
+        unique: true
     },
     name: {
         type: String,

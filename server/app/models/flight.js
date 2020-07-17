@@ -7,7 +7,8 @@ const FlightSchema = new Schema({
         type: String,
         required: [true, 'code is required'],
         // Tối đa 10 ký tự
-        maxlength: [10, 'Max length of "code" is 10']
+        maxlength: [10, 'Max length of "code" is 10'],
+        unique: true
     },
     take_off: {
         type: Date,
@@ -39,9 +40,11 @@ const FlightSchema = new Schema({
         required: [true, 'airport is required'],
         default: undefined
     }],
-    // seat_availability: {
-    //     type: Number
-    // }
+    aircraft:{
+        type: Schema.Types.ObjectId,
+        ref: 'aircraft',
+        required: [true, 'aircraft is required']
+    }
 });
 
 const Flight = mongoose.model('flight', FlightSchema);
