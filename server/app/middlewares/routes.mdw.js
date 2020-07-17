@@ -7,4 +7,6 @@ module.exports = function (app) {
     app.use('/api/airline', require('../routes/airline.route'));
     app.use('/api/seat', require('../routes/seat.route'));
     app.use('/api/aircraft', require('../routes/aircraft.route'));
+    app.use('/api/order',require('../routes/order.route'));
+    app.use('/api/faq',require('../routes/faq.route'));
 };
