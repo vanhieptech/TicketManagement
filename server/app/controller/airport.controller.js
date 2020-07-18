@@ -100,11 +100,12 @@ module.exports = {
     },
     putAirport: (req, res) => {
         const id = req.params.id;
-        const updateOps = {};
-        for (const ops of req.body) {
-            updateOps[ops.propName] = ops.value;
-        }
-        Airport.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
+        // const updateOps = {};
+        // for (const ops of req.body) {
+        //     updateOps[ops.propName] = ops.value;
+        // }
+        // { $set: updateOps }
+        Airport.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
             .select('_id code name location')
             .exec()
             .then(doc => {
