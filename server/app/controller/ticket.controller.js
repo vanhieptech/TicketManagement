@@ -1,15 +1,15 @@
-const Airport = require('../models/airport');
+const Ticket = require('../models/ticket');
 
 module.exports = {
-    getAirports: (req, res) => {
-        Airport
+    getTickets: (req, res) => {
+        Ticket
             .find()
-            .select('_id code name location')
+            .select('_id state flight seat order')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    airports: docs
+                    tickets: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +20,11 @@ module.exports = {
                 })
             })
     },
-    getAirport: (req, res) => {
+    getTicket: (req, res) => {
         const id = req.params.id;
-        Airport
+        Ticket
             .findById(id)
-            .select('_id code name location')
+            .select('_id state flight seat order')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +41,24 @@ module.exports = {
                 })
             });
     },
-    postAirport: (req, res) => {
-        const airport = new Airport({
-            code: req.body.code,
-            name: req.body.name,
-            location: req.body.location
+    postTicket: (req, res) => {
+        const ticket = new Ticket({
+            state: req.body.state,
+            flight: req.body.flight,
+            seat: req.body.seat
         });
-        airport.save().then(result => {
+        ticket.save().then(result => {
             res.status(201).json({
-                message: "Airport created successfully",
-                createdAirport: {
+                message: "Ticket created successfully",
+                createdTicket: {
                     _id: result._id,
-                    code: result.code,
-                    name: result.name,
-                    location: result.location
+                    state: result.state,
+                    flight: result.flight,
+                    seat: result.seat
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/airport/' + result._id,
+                    url: 'http://localhost:4000/api/ticket/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +69,23 @@ module.exports = {
         });
 
     },
-    deleteAirport: (req, res) => {
+    deleteTicket: (req, res) => {
         const id = req.params.id;
-        Airport
+        Ticket
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+            .select('_id state flight seat order')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport deleted successfully',
-                    deletedAirport: doc,
+                    message: 'Ticket deleted successfully',
+                    deletedTicket: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/airport',
+                        url: 'http://localhost:4000/api/ticket',
                         body: {
-                            code: 'String',
-                            name: 'String',
-                            location: 'String'
+                            state: 'String',
+                            flight: 'ObjectId',
+                            seat: 'ObjectId'
                         }
                     }
                 });
@@ -97,23 +97,18 @@ module.exports = {
                 })
             });
     },
-    putAirport: (req, res) => {
+    putTicket: (req, res) => {
         const id = req.params.id;
-        // const updateOps = {};
-        // for (const ops of req.body) {
-        //     updateOps[ops.propName] = ops.value;
-        // }
-        // { $set: updateOps }
-        Airport.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+        Ticket.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id state flight seat order')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport updated successfully',
-                    updatedAirport: doc,
+                    message: 'Ticket updated successfully',
+                    updatedTicket: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/airport/' + doc._id
+                        url: 'http://localhost:4000/api/ticket/' + doc._id
                     }
                 })
             })

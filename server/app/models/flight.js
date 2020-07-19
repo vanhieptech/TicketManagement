@@ -10,17 +10,17 @@ const FlightSchema = new Schema({
         maxlength: [10, 'Max length of "code" is 10'],
         unique: true
     },
-    take_off: {
+    departure_time: {
         type: Date,
-        get: take_off => {
-            return moment.utc(take_off).format('DD-MM-YYYY HH:mm:ss');
+        get: departure_time => {
+            return moment.utc(departure_time).format('DD-MM-YYYY HH:mm:ss');
         },
         required: [true, 'type is required']
     },
-    landing: {
+    arrival_time: {
         type: Date,
-        get: landing => {
-            return moment.utc(landing).format('DD-MM-YYYY HH:mm:ss');
+        get: arrival_time => {
+            return moment.utc(arrival_time).format('DD-MM-YYYY HH:mm:ss');
         },
         required: [true, 'type is required']
     },
@@ -37,10 +37,9 @@ const FlightSchema = new Schema({
     pit_stop: [{
         type: Schema.Types.ObjectId,
         ref: 'airport',
-        required: [true, 'airport is required'],
         default: undefined
     }],
-    aircraft:{
+    aircraft: {
         type: Schema.Types.ObjectId,
         ref: 'aircraft',
         required: [true, 'aircraft is required']

@@ -1,11 +1,24 @@
 const Flight = require('../models/flight');
 const moment = require('moment');
+const { populate } = require('../models/flight');
 
 module.exports = {
     getFlights: (req, res) => {
         Flight
             .find()
-            .select('_id code take_off landing')
+            .select('_id code departure_time arrival_time departure arrival pit_stop aircraft')
+            .populate({
+                path: 'pit_stop arrival departure',
+                select: '_id code name location'
+            })
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: {
+                    path: 'airline seats',
+                    select: '_id name logo type seat_number price aircraft'
+                }
+            })
             .exec()
             .then(docs => {
                 if (docs === undefined) {
@@ -20,8 +33,12 @@ module.exports = {
                         return {
                             _id: doc._id,
                             code: doc.code,
-                            take_off: doc.take_off,
-                            landing: doc.landing
+                            departure_time: doc.departure_time,
+                            arrival_time: doc.arrival_time,
+                            departure: doc.departure,
+                            arrival: doc.arrival,
+                            pit_stop: doc.pit_stop,
+                            aircraft: doc.aircraft
                         }
                     })
                 }
@@ -38,15 +55,31 @@ module.exports = {
         const id = req.params.id;
         Flight
             .findById(id)
-            .select('_id code take_off landing')
+            .select('_id code departure_time arrival_time departure arrival pit_stop aircraft')
+            .populate({
+                path: 'pit_stop arrival departure',
+                select: '_id code name location'
+            })
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: {
+                    path: 'airline seats',
+                    select: '_id name logo type seat_number price aircraft'
+                }
+            })
             .exec()
             .then(doc => {
                 if (doc) {
                     res.status(200).json({
                         _id: doc._id,
                         code: doc.code,
-                        take_off: doc.take_off,
-                        landing: doc.landing
+                        departure_time: doc.departure_time,
+                        arrival_time: doc.arrival_time,
+                        departure: doc.departure,
+                        arrival: doc.arrival,
+                        pit_stop: doc.pit_stop,
+                        aircraft: doc.aircraft
                     });
                 } else {
                     res.status(404).json({
@@ -63,8 +96,8 @@ module.exports = {
     postFlight: (req, res) => {
         const flight = new Flight({
             code: req.body.code,
-            take_off: moment.utc(req.body.take_off, 'DD-MM-YYYY HH:mm:ss'),
-            landing: moment.utc(req.body.landing, 'DD-MM-YYYY HH:mm:ss'),
+            departure_time: moment.utc(req.body.departure_time, 'DD-MM-YYYY HH:mm:ss'),
+            arrival_time: moment.utc(req.body.arrival_time, 'DD-MM-YYYY HH:mm:ss'),
             departure: req.body.departure,
             arrival: req.body.arrival,
             pit_stop: req.body.pit_stop,
@@ -76,8 +109,9 @@ module.exports = {
                 createdFlight: {
                     _id: result._id,
                     code: result.code,
-                    take_off: result.take_off,
-                    landing: result.landing,
+                    departure_time: result.departure_time,
+                    arrival_time: result.arrival_time,
+                    departure: result.departure,
                     arrival: result.arrival,
                     pit_stop: result.pit_stop,
                     aircraft: result.aircraft
@@ -99,7 +133,19 @@ module.exports = {
         const id = req.params.id;
         Flight
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code take_off landing')
+            .select('_id code departure_time arrival_time departure arrival pit_stop aircraft')
+            .populate({
+                path: 'pit_stop arrival departure',
+                select: '_id code name location'
+            })
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: {
+                    path: 'airline seats',
+                    select: '_id name logo type seat_number price aircraft'
+                }
+            })
             .exec()
             .then(doc => {
                 res.status(200).json({
@@ -110,8 +156,12 @@ module.exports = {
                         url: 'http://localhost:4000/api/flight',
                         body: {
                             code: 'String',
-                            take_off: 'Date',
-                            landing: 'Date'
+                            departure_time: 'Date',
+                            arrival_time: 'Date',
+                            departure: 'ObjectId_Airport',
+                            arrival: 'ObjectId_Airport',
+                            pit_stop: 'Arrays of ObjectId_Airport',
+                            aircraft: 'ObjectId_Aircraft'
                         }
                     }
                 });
@@ -125,16 +175,34 @@ module.exports = {
     },
     putFlight: (req, res) => {
         const id = req.params.id;
-        const updateOps = {};
-        for (const ops of req.body) {
-            if (ops.propName !== "take_off" && ops.propName !== "landing") {
-                updateOps[ops.propName] = ops.value;
-            } else {
-                updateOps[ops.propName] = moment.utc(ops.value, 'DD-MM-YYYY HH:mm:ss');
-            }
+        // const updateOps = {};
+        // for (const ops of req.body) {
+        //     if (ops.propName !== "take_off" && ops.propName !== "landing") {
+        //         updateOps[ops.propName] = ops.value;
+        //     } else {
+        //         updateOps[ops.propName] = moment.utc(ops.value, 'DD-MM-YYYY HH:mm:ss');
+        //     }
+        // }
+        if (req.body.departure_time !== undefined) {
+            req.body.departure_time = moment.utc(req.body.departure_time, 'DD-MM-YYYY HH:mm:ss');
         }
-        Flight.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
-            .select('_id code take_off landing')
+        if (req.body.arrival_time !== undefined) {
+            req.body.arrival_time = moment.utc(req.body.arrival_time, 'DD-MM-YYYY HH:mm:ss');
+        }
+        Flight.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id code departure_time arrival_time departure arrival pit_stop aircraft')
+            .populate({
+                path: 'pit_stop arrival departure',
+                select: '_id code name location'
+            })
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: {
+                    path: 'airline seats',
+                    select: '_id name logo type seat_number price aircraft'
+                }
+            })
             .exec()
             .then(doc => {
                 res.status(200).json({

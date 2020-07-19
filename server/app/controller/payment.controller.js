@@ -1,15 +1,16 @@
-const Airport = require('../models/airport');
+const Payment = require('../models/payment');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getAirports: (req, res) => {
-        Airport
+    getPayments: (req, res) => {
+        Payment
             .find()
-            .select('_id code name location')
+            .select('_id card_id user_name amount')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    airports: docs
+                    payments: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +21,11 @@ module.exports = {
                 })
             })
     },
-    getAirport: (req, res) => {
+    getPayment: (req, res) => {
         const id = req.params.id;
-        Airport
+        Payment
             .findById(id)
-            .select('_id code name location')
+            .select('_id card_id user_name amount')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +42,25 @@ module.exports = {
                 })
             });
     },
-    postAirport: (req, res) => {
-        const airport = new Airport({
-            code: req.body.code,
-            name: req.body.name,
-            location: req.body.location
+    postPayment: (req, res) => {
+        const payment = new Payment({
+            _id: new mongoose.Types.ObjectId(),
+            card_id: req.body.card_id,
+            user_name: req.body.user_name,
+            amount: req.body.amount
         });
-        airport.save().then(result => {
+        payment.save().then(result => {
             res.status(201).json({
-                message: "Airport created successfully",
-                createdAirport: {
+                message: "Payment created successfully",
+                createdPayment: {
                     _id: result._id,
-                    code: result.code,
-                    name: result.name,
-                    location: result.location
+                    card_id: result.card_id,
+                    user_name: result.user_name,
+                    amount: result.amount
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/airport/' + result._id,
+                    url: 'http://localhost:4000/api/payment/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +71,22 @@ module.exports = {
         });
 
     },
-    deleteAirport: (req, res) => {
+    deletePayment: (req, res) => {
         const id = req.params.id;
-        Airport
+        Payment
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
-            .exec()
+            .select('_id card_id user_name amount')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport deleted successfully',
-                    deletedAirport: doc,
+                    message: 'Payment deleted successfully',
+                    deletedPayment: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/airport',
+                        url: 'http://localhost:4000/api/payment',
                         body: {
-                            code: 'String',
-                            name: 'String',
-                            location: 'String'
+                            card_id: 'String',
+                            user_name: 'String',
+                            amount: 'Number'
                         }
                     }
                 });
@@ -97,23 +98,18 @@ module.exports = {
                 })
             });
     },
-    putAirport: (req, res) => {
+    putPayment: (req, res) => {
         const id = req.params.id;
-        // const updateOps = {};
-        // for (const ops of req.body) {
-        //     updateOps[ops.propName] = ops.value;
-        // }
-        // { $set: updateOps }
-        Airport.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+        Payment.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id card_id user_name amount')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport updated successfully',
-                    updatedAirport: doc,
+                    message: 'Payment updated successfully',
+                    updatedPayment: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/airport/' + doc._id
+                        url: 'http://localhost:4000/api/payment/' + doc._id
                     }
                 })
             })

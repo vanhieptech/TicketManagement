@@ -1,6 +1,5 @@
 const Aircraft = require('../models/aircraft');
 const Airline = require('../models/airline')
-const moment = require('moment');
 const mongoose = require('mongoose');
 const Seat = require('../models/seat');
 const { all } = require('../routes/home.route');
@@ -15,7 +14,7 @@ module.exports = {
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    aircraft: docs
+                    aircrafts: docs
                 }
                 res.status(200).json(response);
             })
@@ -30,7 +29,7 @@ module.exports = {
         const id = req.params.id;
         Aircraft
             .findById(id)
-            .select('_id code name location')
+            .select('_id code airline seats')
             .populate('seats', '_id type price seat_number aircraft')
             .exec()
             .then(doc => {
@@ -98,11 +97,10 @@ module.exports = {
                             error: err
                         })
                     });
-                    result.seats.push({ _id: seat._id });
+                    // result.seats.push({ _id: seat._id });
                 }
                 //Lưu seats thành công
-                return result.save();
-            }).then(result => {
+                // return result.save();
                 //Success
                 res.status(201).json({
                     message: "Aircraft created successfully",
@@ -110,7 +108,7 @@ module.exports = {
                         _id: result._id,
                         code: result.code,
                         airline: result.airline,
-                        seats: result.seats
+                        // seats: result.seats
                     },
                     request: {
                         type: 'GET',
@@ -129,7 +127,8 @@ module.exports = {
         const id = req.params.id;
         Aircraft
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+            .select('_id code airline seats')
+            .populate('seats', '_id type price seat_number aircraft')
             .exec()
             .then(doc => {
                 res.status(200).json({
@@ -137,11 +136,10 @@ module.exports = {
                     deletedAircraft: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/airport',
+                        url: 'http://localhost:4000/api/aircraft',
                         body: {
                             code: 'String',
-                            name: 'String',
-                            location: 'String'
+                            airline: 'String'
                         }
                     }
                 });
@@ -155,12 +153,9 @@ module.exports = {
     },
     putAircraft: (req, res) => {
         const id = req.params.id;
-        const updateOps = {};
-        for (const ops of req.body) {
-            updateOps[ops.propName] = ops.value;
-        }
-        Aircraft.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+        Aircraft.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id code airline seats')
+            .populate('seats', '_id type price seat_number aircraft')
             .exec()
             .then(doc => {
                 res.status(200).json({
@@ -168,7 +163,7 @@ module.exports = {
                     updatedAircraft: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/airport/' + doc._id
+                        url: 'http://localhost:4000/api/aircraft/' + doc._id
                     }
                 })
             })

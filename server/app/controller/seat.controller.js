@@ -1,11 +1,15 @@
 const Seat = require('../models/seat');
-const moment = require('moment');
 
 module.exports = {
     getSeats: (req, res) => {
         Seat
             .find()
-            .select('_id type price seat_number')
+            .select('_id type price seat_number aircraft')
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: { path: 'airline', select: '_id name logo' }
+            })
             .exec()
             .then(docs => {
                 const response = {
@@ -25,7 +29,12 @@ module.exports = {
         const id = req.params.id;
         Seat
             .findById(id)
-            .select('_id type price seat_number')
+            .select('_id type price seat_number aircraft')
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: { path: 'airline', select: '_id name logo' }
+            })
             .exec()
             .then(doc => {
                 if (doc) {
@@ -46,7 +55,8 @@ module.exports = {
         const seat = new Seat({
             type: req.body.type,
             price: req.body.price,
-            seat_number: req.body.seat_number
+            seat_number: req.body.seat_number,
+            aircraft: req.body.aircraft
         });
         seat.save().then(result => {
             res.status(201).json({
@@ -55,7 +65,8 @@ module.exports = {
                     _id: result._id,
                     type: result.type,
                     price: result.price,
-                    seat_number: result.seat_number
+                    seat_number: result.seat_number,
+                    aircraft: result.aircraft
                 },
                 request: {
                     type: 'GET',
@@ -74,7 +85,12 @@ module.exports = {
         const id = req.params.id;
         Seat
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id type price seat_number')
+            .select('_id type price seat_number aircraft')
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: { path: 'airline', select: '_id name logo' }
+            })
             .exec()
             .then(doc => {
                 res.status(200).json({
@@ -86,7 +102,8 @@ module.exports = {
                         body: {
                             type: 'String',
                             price: 'Number',
-                            seat_number: 'String'
+                            seat_number: 'String',
+                            aircraft: 'ObjectId'
                         }
                     }
                 });
@@ -100,12 +117,13 @@ module.exports = {
     },
     putSeat: (req, res) => {
         const id = req.params.id;
-        const updateOps = {};
-        for (const ops of req.body) {
-            updateOps[ops.propName] = ops.value;
-        }
-        Seat.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
-            .select('_id type price seat_number')
+        Seat.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id type price seat_number aircraft')
+            .populate({
+                path: 'aircraft',
+                select: '_id code airline seats',
+                populate: { path: 'airline', select: '_id name logo' }
+            })
             .exec()
             .then(doc => {
                 res.status(200).json({
