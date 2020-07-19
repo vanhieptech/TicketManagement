@@ -8,8 +8,8 @@ const AirlineSchema = new Schema({
         unique: true
     },
     logo: {
-        type: Number,
-        // required: [true, 'Airline_logo is required']
+        type: String,
+        required: [true, 'Airline_logo is required']
     }
 });
 

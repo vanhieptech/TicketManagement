@@ -1,15 +1,16 @@
-const Airport = require('../models/airport');
+const FAQ = require('../models/faq');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getAirports: (req, res) => {
-        Airport
+    getFAQs: (req, res) => {
+        FAQ
             .find()
-            .select('_id code name location')
+            .select('_id question answer')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    airports: docs
+                    aircraft: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +21,11 @@ module.exports = {
                 })
             })
     },
-    getAirport: (req, res) => {
+    getFAQ: (req, res) => {
         const id = req.params.id;
-        Airport
+        FAQ
             .findById(id)
-            .select('_id code name location')
+            .select('_id question answer')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +42,23 @@ module.exports = {
                 })
             });
     },
-    postAirport: (req, res) => {
-        const airport = new Airport({
-            code: req.body.code,
-            name: req.body.name,
-            location: req.body.location
+    postFAQ: (req, res) => {
+        const faq = new FAQ({
+            _id: new mongoose.Types.ObjectId(),
+            question: req.body.quesion,
+            answer: req.body.answer
         });
-        airport.save().then(result => {
+        faq.save().then(result => {
             res.status(201).json({
-                message: "Airport created successfully",
-                createdAirport: {
+                message: "FAQ created successfully",
+                createdFAQ: {
                     _id: result._id,
-                    code: result.code,
-                    name: result.name,
-                    location: result.location
+                    question: result.question,
+                    answer: result.answer
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/airport/' + result._id,
+                    url: 'http://localhost:4000/api/faq/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +69,21 @@ module.exports = {
         });
 
     },
-    deleteAirport: (req, res) => {
+    deleteFAQ: (req, res) => {
         const id = req.params.id;
-        Airport
+        FAQ
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
-            .exec()
+            .select('_id question answer')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport deleted successfully',
-                    deletedAirport: doc,
+                    message: 'FAQ deleted successfully',
+                    deletedFAQ: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/airport',
+                        url: 'http://localhost:4000/api/faq',
                         body: {
-                            code: 'String',
-                            name: 'String',
-                            location: 'String'
+                            question: 'String',
+                            answer: 'String'
                         }
                     }
                 });
@@ -97,23 +95,18 @@ module.exports = {
                 })
             });
     },
-    putAirport: (req, res) => {
+    putFAQ: (req, res) => {
         const id = req.params.id;
-        // const updateOps = {};
-        // for (const ops of req.body) {
-        //     updateOps[ops.propName] = ops.value;
-        // }
-        // { $set: updateOps }
-        Airport.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+        FAQ.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id question answer')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport updated successfully',
-                    updatedAirport: doc,
+                    message: 'FAQ updated successfully',
+                    updatedFAQ: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/airport/' + doc._id
+                        url: 'http://localhost:4000/api/faq/' + doc._id
                     }
                 })
             })

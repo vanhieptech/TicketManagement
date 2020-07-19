@@ -9,4 +9,7 @@ module.exports = function (app) {
     app.use('/api/aircraft', require('../routes/aircraft.route'));
     app.use('/api/order',require('../routes/order.route'));
     app.use('/api/faq',require('../routes/faq.route'));
+    app.use('/api/admin',require('../routes/admin.route'));
+    app.use('/api/feedback',require('../routes/feedback.route'));
+    app.use('/api/payment',require('../routes/feedback.route'));
 };

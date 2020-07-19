@@ -6,9 +6,10 @@ const TicketSchema = new Schema({
         type: Boolean,
         required: [true, 'State is required'],
     },
-    passenger: { type: Schema.Types.ObjectId, ref: 'passenger' },
-    flight: { type: Schema.Types.ObjectId, ref: 'flight' },
-    seat: { type: Schema.Types.ObjectId, ref: 'seat' },
+    flight: { type: Schema.Types.ObjectId, ref: 'flight', required: [true,'ticket_flight is required'] },
+    seat: { type: Schema.Types.ObjectId, ref: 'seat' , required: [true,'ticket_seat is required']},
+    order: { type: Schema.Types.ObjectId, ref: 'order'},
+    // passenger: { type: Schema.Types.ObjectId, ref: 'passenger' }
 });
 
 const Ticket = monggose.model('ticket', TicketSchema);

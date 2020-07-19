@@ -6,7 +6,7 @@ const PaymentSchema = new Schema({
         type: String,
         required: [true, 'card_id is required']
     },
-    username: {
+    user_name: {
         type: String,
         required: [true, 'username is required']
     },

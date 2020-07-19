@@ -1,5 +1,7 @@
 const Airline = require('../models/airline');
 const moment = require('moment');
+const { Mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 module.exports = {
     getAirlines: (req, res) => {
@@ -43,10 +45,11 @@ module.exports = {
             });
     },
     postAirline: (req, res) => {
+        console.log(req.file);
         const airline = new Airline({
-            code: req.body.code,
+            _id: new mongoose.Types.ObjectId(),
             name: req.body.name,
-            location: req.body.location
+            logo: req.file.path
         });
         airline.save().then(result => {
             res.status(201).json({
@@ -54,8 +57,7 @@ module.exports = {
                 createdAirline: {
                     _id: result._id,
                     code: result.code,
-                    name: result.name,
-                    location: result.location
+                    logo: result.logo
                 },
                 request: {
                     type: 'GET',
@@ -99,12 +101,24 @@ module.exports = {
     },
     putAirline: (req, res) => {
         const id = req.params.id;
-        const updateOps = {};
-        for (const ops of req.body) {
-            updateOps[ops.propName] = ops.value;
+        // const updateOps = {};
+        // for (const ops of req.body) {
+        //     updateOps[ops.propName] = ops.value;
+        // }
+        // { $set: updateOps }
+        let updates;
+        if (req.body.name === null || req.body.name === undefined) {
+            updates = {
+                logo: req.file.path
+            }
+        } else {
+            updates = {
+                name: req.body.name,
+                logo: req.file.path
+            }
         }
-        Airline.findOneAndUpdate({ _id: id }, { $set: updateOps }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+        Airline.findOneAndUpdate({ _id: id }, updates, { new: true, useFindAndModify: false })
+            .select('_id name logo')
             .exec()
             .then(doc => {
                 res.status(200).json({

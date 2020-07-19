@@ -1,15 +1,18 @@
-const Airport = require('../models/airport');
+const Admin = require('../models/admin');
+const moment = require('moment');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getAirports: (req, res) => {
-        Airport
+    getAdmins: (req, res) => {
+        Admin
             .find()
-            .select('_id code name location')
+            .select('_id permission user')
+            .populate('user', '_id name phone email dob gender password')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    airports: docs
+                    aircraft: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +23,12 @@ module.exports = {
                 })
             })
     },
-    getAirport: (req, res) => {
+    getAdmin: (req, res) => {
         const id = req.params.id;
-        Airport
+        Admin
             .findById(id)
-            .select('_id code name location')
+            .select('_id permission user')
+            .populate('user', '_id name phone email dob gender password')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +45,23 @@ module.exports = {
                 })
             });
     },
-    postAirport: (req, res) => {
-        const airport = new Airport({
-            code: req.body.code,
-            name: req.body.name,
-            location: req.body.location
+    postAdmin: (req, res) => {
+        const admin = new Admin({
+            _id: new mongoose.Types.ObjectId(),
+            user: req.body.user,
+            permission: 1
         });
-        airport.save().then(result => {
+        admin.save().then(result => {
             res.status(201).json({
-                message: "Airport created successfully",
-                createdAirport: {
+                message: "Admin created successfully",
+                createdAdmin: {
                     _id: result._id,
-                    code: result.code,
-                    name: result.name,
-                    location: result.location
+                    user: result.user,
+                    permission: result.permission
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/airport/' + result._id,
+                    url: 'http://localhost:4000/api/admin/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +72,22 @@ module.exports = {
         });
 
     },
-    deleteAirport: (req, res) => {
+    deleteAdmin: (req, res) => {
         const id = req.params.id;
-        Airport
+        Admin
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id code name location')
-            .exec()
+            .select('_id permission user')
+            .populate('user', '_id name phone email dob gender password')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport deleted successfully',
-                    deletedAirport: doc,
+                    message: 'Admin deleted successfully',
+                    deletedAdmin: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/airport',
+                        url: 'http://localhost:4000/api/admin',
                         body: {
-                            code: 'String',
-                            name: 'String',
-                            location: 'String'
+                            permission: 'String',
+                            user: 'ObjectId'
                         }
                     }
                 });
@@ -97,23 +99,19 @@ module.exports = {
                 })
             });
     },
-    putAirport: (req, res) => {
+    putAdmin: (req, res) => {
         const id = req.params.id;
-        // const updateOps = {};
-        // for (const ops of req.body) {
-        //     updateOps[ops.propName] = ops.value;
-        // }
-        // { $set: updateOps }
-        Airport.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id code name location')
+        Admin.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id permission user')
+            .populate('user', '_id name phone email dob gender password')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Airport updated successfully',
-                    updatedAirport: doc,
+                    message: 'Admin updated successfully',
+                    updatedAdmin: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/airport/' + doc._id
+                        url: 'http://localhost:4000/api/admin/' + doc._id
                     }
                 })
             })

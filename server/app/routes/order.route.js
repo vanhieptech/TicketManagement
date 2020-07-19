@@ -1,19 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const orderController = require('../controller/order.controller')
+const controller = require('../controller/order.controller')
+
+
+//GET /api/order
+router.get('/',controller.getOrders);
+
+//GET /api/order/:id
+router.get('/:id',controller.getOrder);
+
 //POST /api/order
-router.post('/', orderController.sendOrder);
+router.post('/', controller.postOrder);
 
 //PUT /api/order
-router.put('/', (req,res) =>{
-    res.send({type:'PUT'});
-});
+router.put('/:id', controller.putOrder);
 
 //DELETE /api/order
-router.delete('/', (req,res) =>{
-    res.send({type:'DELETE'});
-});
-
-
+router.delete('/:id', controller.deleteOrder);
 
 module.exports = router;
