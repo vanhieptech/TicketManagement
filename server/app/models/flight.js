@@ -43,6 +43,10 @@ const FlightSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'aircraft',
         required: [true, 'aircraft is required']
+    },
+    seat_available: {
+        type: Number,
+        required: [true, 'seat available is required']
     }
 });
 
