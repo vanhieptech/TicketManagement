@@ -42,6 +42,10 @@ const UserSchema = new Schema({
             required: [true, 'Password is required'],
             minlength: [8, 'Password must have at least 8 character']
         }
+    },
+    permission:{
+        type:'String',
+        default:'ROLE_USER'
     }
 });
 

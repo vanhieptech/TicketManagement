@@ -1,18 +1,17 @@
-const Admin = require('../models/admin');
-const moment = require('moment');
+const Regulation = require('../models/regulation');
 const mongoose = require('mongoose');
 
 module.exports = {
-    getAdmins: (req, res) => {
-        Admin
+    getRegulations: (req, res) => {
+        Regulation
             .find()
-            .select('_id permission user')
-            .populate('user', '_id name phone email dob gender password')
+            .select('_id name value admin')
+            .populate('admin', '_id userdetail permission')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    aircraft: docs
+                    regulations: docs
                 }
                 res.status(200).json(response);
             })
@@ -23,12 +22,12 @@ module.exports = {
                 })
             })
     },
-    getAdmin: (req, res) => {
+    getRegulation: (req, res) => {
         const id = req.params.id;
-        Admin
+        Regulation
             .findById(id)
-            .select('_id permission user')
-            .populate('user', '_id name phone email dob gender password')
+            .select('_id name value admin')
+            .populate('admin', '_id userdetail permission')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -45,23 +44,25 @@ module.exports = {
                 })
             });
     },
-    postAdmin: (req, res) => {
-        const admin = new Admin({
+    postRegulation: (req, res) => {
+        const regulation = new Regulation({
             _id: new mongoose.Types.ObjectId(),
-            user: req.body.user,
-            permission: 1
+            name: req.body.name,
+            value: req.body.value,
+            admin: req.body.admin
         });
-        admin.save().then(result => {
+        regulation.save().then(result => {
             res.status(201).json({
-                message: "Admin created successfully",
-                createdAdmin: {
+                message: "Regulation created successfully",
+                createdRegulation: {
                     _id: result._id,
-                    user: result.user,
-                    permission: result.permission
+                    name: result.name,
+                    value: result.value,
+                    admin: result.admin
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/admin/' + result._id,
+                    url: 'http://localhost:4000/api/regulation/' + result._id,
                 }
             })
         }).catch(err => {
@@ -72,22 +73,23 @@ module.exports = {
         });
 
     },
-    deleteAdmin: (req, res) => {
+    deleteRegulation: (req, res) => {
         const id = req.params.id;
-        Admin
+        Regulation
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id permission user')
-            .populate('user', '_id name phone email dob gender password')
+            .select('_id name value admin')
+            .populate('admin', '_id userdetail permission')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Admin deleted successfully',
-                    deletedAdmin: doc,
+                    message: 'Regulation deleted successfully',
+                    deletedRegulation: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/admin',
+                        url: 'http://localhost:4000/api/regulation',
                         body: {
-                            permission: 'String',
-                            user: 'ObjectId'
+                            name:'String',
+                            value:'Number',
+                            admin:'ObjectId'
                         }
                     }
                 });
@@ -99,19 +101,19 @@ module.exports = {
                 })
             });
     },
-    putAdmin: (req, res) => {
+    putRegulation: (req, res) => {
         const id = req.params.id;
-        Admin.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id permission user')
-            .populate('user', '_id name phone email dob gender password')
+        Regulation.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id name value admin')
+            .populate('admin', '_id userdetail permission')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Admin updated successfully',
-                    updatedAdmin: doc,
+                    message: 'Regulation updated successfully',
+                    updatedRegulation: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/admin/' + doc._id
+                        url: 'http://localhost:4000/api/regulation/' + doc._id
                     }
                 })
             })
