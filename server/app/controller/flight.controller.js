@@ -1,7 +1,8 @@
 const Flight = require('../models/flight');
 const moment = require('moment');
 const { populate } = require('../models/flight');
-
+const Aircraft = require('../models/aircraft');
+const ObjectId = require('mongoose').Types.ObjectId; 
 module.exports = {
     getFlights: (req, res) => {
         Flight
@@ -93,7 +94,9 @@ module.exports = {
                 })
             });
     },
-    postFlight: (req, res) => {
+    postFlight: async  (req, res) => {
+        const air = await Aircraft.findById( new ObjectId(req.body.aircraft));
+        let numSeat = air.seats.length;
         const flight = new Flight({
             code: req.body.code,
             departure_time: moment.utc(req.body.departure_time, 'DD-MM-YYYY HH:mm:ss'),
@@ -101,7 +104,8 @@ module.exports = {
             departure: req.body.departure,
             arrival: req.body.arrival,
             pit_stop: req.body.pit_stop,
-            aircraft: req.body.aircraft
+            aircraft: req.body.aircraft,
+            seat_available: numSeat,
         });
         flight.save().then(result => {
             res.status(201).json({
@@ -114,7 +118,8 @@ module.exports = {
                     departure: result.departure,
                     arrival: result.arrival,
                     pit_stop: result.pit_stop,
-                    aircraft: result.aircraft
+                    aircraft: result.aircraft,
+                    seat_available: result.seat_available
                 },
                 request: {
                     type: 'GET',
@@ -220,5 +225,20 @@ module.exports = {
                     error: err
                 })
             });
+    },
+    filterFlight: async (req, res, next) => {
+        try {
+            let flights = await Flight.find({ departure_time: req.query.departure_time,
+                                               arrival_time: req.query.arrival_time,
+                                               departure:  new ObjectId(req.query.departure)
+                                            },);
+            res.send(flights);
+        } catch(error) {
+            console.log(error);
+            res.status(500).json({
+                error: error
+            });
+        }
+
     }
 }
