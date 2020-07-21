@@ -247,23 +247,23 @@ module.exports = {
       });
   },
 
-  filterFlight: async (req, res, next) => {
+  searchFlight: async (req, res, next) => {
+    //departure,arrival, departure_time, standard, passengerNumber
     try {
       let flights = await Flight.find({
-        departure_time: req.query.departure_time,
-        arrival_time: req.query.arrival_time,
-        departure: new ObjectId(req.query.departure),
-        seat_available: req.query.seat_available,
+         departure_time: req.query.departure_time,
+      })
+        .populate({
+          path: "aircraft departure arrival standardfare",
+          populate: {
+            path: 'airline'
+          }
+          });
+      let filterdFlight =  flights.filter((aFlight) => {
+        return (aFlight.departure.location = req.query.departure) && (aFlight.arrival.location = req.query.arrival)
+         && ((aFlight.standardfare[0].seat_type = req.query.standardfare) || (aFlight.standardfare[1].seat_type = req.query.standardfare));
       });
-      const aircraft = await Aircraft.findById(
-        new ObjectId(req.query.aircraft)
-      );
-      if (req.query.seat_available > aircraft.seats.length) {
-        res.status(404).send({
-          message: "Not Found",
-        });
-      }
-      res.send(flights);
+      res.send(filterdFlight);
     } catch (error) {
       console.log(error);
       res.status(500).json({
