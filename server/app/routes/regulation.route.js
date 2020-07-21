@@ -4,10 +4,10 @@ const controller = require('../controller/regulation.controller')
 
 
 //GET /api/regulation
-router.get('/',controller.getRegulations);
+router.get('/', controller.getRegulations);
 
 //GET /api/regulation/:id
-router.get('/:id',controller.getRegulation);
+router.get('/:id', controller.getRegulation);
 
 //POST /api/regulation
 router.post('/', controller.postRegulation);

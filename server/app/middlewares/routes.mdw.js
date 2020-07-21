@@ -1,6 +1,7 @@
 module.exports = function (app) {
     app.use('/', require('../routes/home.route'));
-    app.use('/api/users', require('../routes/users.route'));
+    app.use('/signup', require('../routes/signup.route'));
+    app.use('/login', require('../routes/login.route'));
     app.use('/api/ticket', require('../routes/ticket.route'));
     app.use('/api/flight', require('../routes/flight.route'));
     app.use('/api/airport', require('../routes/airport.route'));
