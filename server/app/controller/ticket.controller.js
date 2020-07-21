@@ -118,5 +118,5 @@ module.exports = {
                     error: err
                 })
             });
-    }
+    },
 }
