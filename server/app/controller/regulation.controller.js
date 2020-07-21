@@ -3,10 +3,11 @@ const mongoose = require('mongoose');
 
 module.exports = {
     getRegulations: (req, res) => {
+        console.log('Hello');
         Regulation
             .find()
             .select('_id name value admin')
-            .populate('admin', '_id userdetail permission')
+            .populate('admin', '_id name phone email dob gender permission')
             .exec()
             .then(docs => {
                 const response = {
@@ -27,7 +28,7 @@ module.exports = {
         Regulation
             .findById(id)
             .select('_id name value admin')
-            .populate('admin', '_id userdetail permission')
+            .populate('admin', '_id name phone email dob gender permission')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -78,7 +79,7 @@ module.exports = {
         Regulation
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
             .select('_id name value admin')
-            .populate('admin', '_id userdetail permission')
+            .populate('admin', '_id name phone email dob gender permission')
             .then(doc => {
                 res.status(200).json({
                     message: 'Regulation deleted successfully',
@@ -87,9 +88,9 @@ module.exports = {
                         type: 'POST',
                         url: 'http://localhost:4000/api/regulation',
                         body: {
-                            name:'String',
-                            value:'Number',
-                            admin:'ObjectId'
+                            name: 'String',
+                            value: 'Number',
+                            admin: 'ObjectId'
                         }
                     }
                 });
@@ -105,7 +106,7 @@ module.exports = {
         const id = req.params.id;
         Regulation.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
             .select('_id name value admin')
-            .populate('admin', '_id userdetail permission')
+            .populate('admin', '_id name phone email dob gender permission')
             .exec()
             .then(doc => {
                 res.status(200).json({

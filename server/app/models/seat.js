@@ -10,10 +10,10 @@ const SeatSchema = new Schema({
         type: String,
         required: [true, 'seatnumber is required']
     },
-    price: {
-        type: Number,
-        required: [true, 'price is required']
-    },
+    // price: {
+    //     type: Number,
+    //     required: [true, 'price is required']
+    // },
     aircraft: {
         type: Schema.Types.ObjectId,
         ref: 'aircraft',

@@ -14,4 +14,5 @@ module.exports = function (app) {
     app.use('/api/feedback',require('../routes/feedback.route'));
     app.use('/api/payment',require('../routes/feedback.route'));
     app.use('/api/regulation',require('../routes/regulation.route'));
+    app.use('/api/standardfare',require('../routes/standardfare.route'));
 };
