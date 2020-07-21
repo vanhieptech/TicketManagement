@@ -246,14 +246,14 @@ module.exports = {
         });
       });
   },
-  
+
   filterFlight: async (req, res, next) => {
     try {
       let flights = await Flight.find({
         departure_time: req.query.departure_time,
         arrival_time: req.query.arrival_time,
         departure: new ObjectId(req.query.departure),
-        seat_available: req.query.seat_available
+        seat_available: req.query.seat_available,
       });
       const aircraft = await Aircraft.findById(
         new ObjectId(req.query.aircraft)
@@ -269,6 +269,41 @@ module.exports = {
       res.status(500).json({
         error: error,
       });
+    }
+  },
+  sortFlight: async (req, res, next) => {
+    if (req.query.field === "departure_time") {
+      //Sort by departure time
+      if (req.query.sortBy === "desc") {
+        //Sort descendent - Lately
+        try {
+          let flights = await Flight.find({});
+          flights.sort((a, b) => {
+            return new Date(b.departure_time) - new Date(a.departure_time);
+          });
+          res.send(flights);
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({
+            error: error,
+          });
+        }
+      }
+      if (req.query.sortBy === "asc") {
+        //Sort accendent - Early
+        try {
+          let flights = await Flight.find({});
+          flights.sort((a, b) => {
+            return new Date(a.departure_time) - new Date(b.departure_time);
+          });
+          res.send(flights);
+        } catch (error) {
+          console.log(error);
+          res.status(500).json({
+            error: error,
+          });
+        }
+      }
     }
   },
 };
