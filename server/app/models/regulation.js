@@ -12,7 +12,7 @@ const RegulationSchema = new Schema({
     },
     admin:{
         type:Schema.Types.ObjectId,
-        ref:'admin',
+        ref:'user',
         required:[true,'regulation_admin is required']
     }
 });

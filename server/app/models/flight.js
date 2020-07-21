@@ -47,7 +47,11 @@ const FlightSchema = new Schema({
     seat_available: {
         type: Number,
         required: [true, 'seat available is required']
-    }
+    },
+    standardfare: [{
+        type: Schema.Types.ObjectId,
+        ref:'standardfare'
+    }]
 });
 
 const Flight = mongoose.model('flight', FlightSchema);
