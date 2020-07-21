@@ -5,14 +5,6 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
 
-// function jwtSignUser(user) {
-//   const ONE_WEEK = 60 * 60 * 24 * 7
-//   return jwt.sign(user, 'ticketmanagement', {
-//     expiresIn: ONE_WEEK
-//   })
-// }
-
-
 module.exports = {
   signUp: (req, res) => {
     //Tìm user với email
@@ -40,7 +32,9 @@ module.exports = {
                 phone: req.body.phone,
                 dob: moment.utc(req.body.dob, 'DD-MM-YYYY HH:mm:ss'),
                 gender: req.body.gender,
-                permission: 'ROLE_USER'
+                permission: 'ROLE_USER',
+                createdDate: moment.utc(moment().format(), 'DD-MM-YYYY HH:mm:ss'),
+                updatedDate: moment.utc(moment().format(), 'DD-MM-YYYY HH:mm:ss')
               });
               //Lưu user
               user.save().then(result => {
@@ -92,5 +86,32 @@ module.exports = {
           error: err
         })
       });
+  },
+  getUsers: async (req, res) => {
+    try {
+      const users = await User.find().select('_id name phone email dob gender permission');
+      res.status(200).json({
+        count: users.length,
+        users: users
+      })
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        error: error
+      })
+    }
+  },
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findOne({ _id: req.params.id }).select('_id name phone email dob gender permission');
+      res.status(200).json({
+        user: user
+      })
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        error: error
+      })
+    }
   }
 };

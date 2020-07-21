@@ -1,5 +1,6 @@
 const monggose = require('mongoose');
 const Schema = monggose.Schema;
+const moment = require('moment');
 
 const UserSchema = new Schema({
     name: {
@@ -43,6 +44,14 @@ const UserSchema = new Schema({
     permission: {
         type: 'String',
         default: 'ROLE_USER'
+    },
+    createdDate: {
+        type: Date,
+        // default: moment.utc(Date.format(),'DD-MM-YYYY HH:mm:ss')
+    },
+    updatedDate: {
+        type: Date,
+        // default: moment.utc(Date.now(),'DD-MM-YYYY HH:mm:ss')
     }
 });
 
