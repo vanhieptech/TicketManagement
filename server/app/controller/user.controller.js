@@ -4,9 +4,41 @@ const bcrypt = require("bcrypt");
 const mongoose = require('mongoose');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
+const { create } = require("../models/user");
+
+function compareNameAsc(a, b) {
+  // Use toUpperCase() to ignore character casing
+  const nameA = a.name.toUpperCase();
+  const nameB = b.name.toUpperCase();
+  let comparison = 0;
+  if (nameA > nameB) {
+    comparison = 1;
+  } else if (nameA < nameB) {
+    comparison = -1;
+  }
+  return comparison;
+}
+
+function compareNameDesc(a, b) {
+  // Use toUpperCase() to ignore character casing
+  const nameA = a.name.toUpperCase();
+  const nameB = b.name.toUpperCase();
+  let comparison = 0;
+  if (nameB > nameA) {
+    comparison = 1;
+  } else if (nameB < nameA) {
+    comparison = -1;
+  }
+  return comparison;
+}
+
+function filterGender(a, filterGender) {
+  const gender = a.gender
+  return gender == filterGender;
+}
 
 module.exports = {
-  signUp: (req, res) => {
+  postUser: (req, res) => {
     //Tìm user với email
     User.find({ email: req.body.email })
       .exec()
@@ -24,6 +56,8 @@ module.exports = {
                 error: err
               });
             } else {
+              var createddate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(),
+                now.getHours(), now.getMinutes(), now.getSeconds()));
               const user = new User({
                 _id: new mongoose.Types.ObjectId(),
                 name: req.body.name,
@@ -33,8 +67,8 @@ module.exports = {
                 dob: moment.utc(req.body.dob, 'DD-MM-YYYY HH:mm:ss'),
                 gender: req.body.gender,
                 permission: 'ROLE_USER',
-                createdDate: moment.utc(moment().format(), 'DD-MM-YYYY HH:mm:ss'),
-                updatedDate: moment.utc(moment().format(), 'DD-MM-YYYY HH:mm:ss')
+                createdDate: createddate,
+                updatedDate: createddate
               });
               //Lưu user
               user.save().then(result => {
@@ -88,8 +122,50 @@ module.exports = {
       });
   },
   getUsers: async (req, res) => {
+    //Sắp xếp và lọc
+    const sortField = req.query.sortField;
+    const orderBy = req.query.orderBy;
+    const filterGender = req.query.filterGender;
+    const filterDOB = req.query.filterDOB;
     try {
-      const users = await User.find().select('_id name phone email dob gender permission');
+      let users = await User.find().select('_id name phone dob gender email permission createdDate updatedDate').exec();
+      users.sort(compareNameAsc);
+      // let usersCopy = JSON.parse(JSON.stringify(users));
+      // Mặc định là sort theo tên tăng
+      if (filterGender !== null && filterGender !== undefined) {
+        if (filterGender == 'Nam') {
+          users.filter(user => {
+            user.gender.includes('Nam');
+          });
+        } else {
+          users.filter(user => {
+            user.gender.includes('Nữ');
+          });
+        }
+      }
+      // if (filterDOB !== null && filterDOB !== undefined) {
+      //   usersCopy.filter(user => +user.dob.getFullYear() == +filterDOB);
+      // }
+      // if (sortField !== null && sortField !== undefined) {
+      //   if (sortField === 'name') {
+      //     if (orderBy === 'asc') usersCopy.sort(compareNameAsc);
+      //     else usersCopy.sort(compareNameDesc);
+      //   } else if (sortField === 'createdDate') {// Sort các user đó theo ngày tạo
+      //     if (orderBy === 'asc') {
+      //       usersCopy.sort((a, b) => {
+      //         return b.createdDate - a.createdDate;
+      //       });
+      //     } else {
+      //       usersCopy.sort((a, b) => {
+      //         return a.createdDate - b.createdDate;
+      //       });
+      //     }
+      //   }
+      // }
+     
+
+      console.log(users);
+
       res.status(200).json({
         count: users.length,
         users: users
@@ -113,5 +189,41 @@ module.exports = {
         error: error
       })
     }
-  }
+  },
+  // sortUsers: async (req, res) => {
+  //   const sortfield = req.query.sortfield;
+  //   const order = req.query.orderby;
+  //   let users = null;
+  //   // Tìm tất cả các user từ db
+  //   try {
+  //     users = await User.find().exec();
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json({
+  //       error: error
+  //     })
+  //   }
+  //   //Sort các user đó theo name 
+  //   if (sortfield === 'name') {
+  //     if (order === 'asc') {
+  //       users.sort(compareNameAsc);
+  //     } else {
+  //       users.sort(compareNameDesc);
+  //     }
+  //   } else if (sortfield === 'createddate') {// Sort các user đó theo ngày tạo
+  //     if (order === 'asc') {
+  //       users.sort((a, b) => {
+  //         return a.createdDate - b.createdDate;
+  //       });
+  //     } else {
+  //       users.sort((a, b) => {
+  //         return b.createdDate - a.createdDate;
+  //       });
+  //     }
+  //   }
+  //   res.status(200).json(users);
+  // },
+  // filterUsers: async (req, res) => {
+
+  // }
 };
