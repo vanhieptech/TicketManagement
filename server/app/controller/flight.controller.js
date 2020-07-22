@@ -259,7 +259,7 @@ module.exports = {
         },
       });
 
-      let filterdFlight = filterdFlight.filter((aFlight) => {
+      let filterdFlight = flights.filter((aFlight) => {
         return (
           (aFlight.departure.location == req.query.departure) &&
           (aFlight.arrival.location == req.query.arrival)
@@ -267,6 +267,7 @@ module.exports = {
       });
 
       let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
+      let finalFlights = []
       filterdFlightCopy.forEach((element) => {
         let durationMinute =
           (new Date(element.arrival_time) - new Date(element.departure_time)) /
@@ -274,13 +275,16 @@ module.exports = {
         if (req.query.standardfare == "Phổ thông") {
           element.price =
             durationMinute * element.standardfare[0].price_per_minute;
+            finalFlights.push(element);
         }
         if (req.query.standardfare == "Thương Gia") {
           element.price =
             durationMinute * element.standardfare[1].price_per_minute;
+            finalFlights.push(element);
         }
       });
-      res.send({ flights: filterdFlightCopy });
+     
+      res.send({ flights: finalFlights});
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -331,25 +335,29 @@ module.exports = {
         //Pit stop filter
         if (req.query.filterPitStop > 1) {
           filterdFlightCopy = filterdFlightCopy.filter((element) => {
-            return (element.pit_stop.length > 1)
-          })
+            return (element.pit_stop.length > 0 )
+          });
         }
         else {
           //Do nothing
         }
         if (req.query.filterDeparture_Hour == "Sáng") {
-          
+          filterdFlightCopy = filterdFlightCopy.filter((element) => {
+            return (new Date(element.departure_time).getHours() > 0 && (new Date(element.departure_time).getHours() < 12))
+          });
         }
         else {
-
+          filterdFlightCopy = filterdFlightCopy.filter((element) => {
+            return (new Date(element.departure_time).getHours() > 12 )
+          });
         }
-
        //Filter airline
+       filterdFlightCopy = filterdFlightCopy.filter((element) => {
+            return (element.standardfare[0].airline == req.query.filterAirline);
+       });
+
        //Filter StandardFare
-       console.log("Send",   req.query.filterPitStop +
-       req.query.filterDeparture_Hour +
-       req.query.filterAirline +
-       req.query.filterStandardFare)
+
       }
       else {
         console.log("Get out")
