@@ -248,7 +248,49 @@ module.exports = {
   },
 
   searchFlight: async (req, res, next) => {
-    //departure,arrival, departure_time, standardfare, passengerNumber
+    //departure,arrival, departure_time, standardfare
+    try {
+      let flights = await Flight.find({
+        departure_time: req.query.departure_time,
+      }).populate({
+        path: "departure arrival standardfare",
+        populate: {
+          path: "airline",
+        },
+      });
+
+      let filterdFlight = filterdFlight.filter((aFlight) => {
+        return (
+          (aFlight.departure.location == req.query.departure) &&
+          (aFlight.arrival.location == req.query.arrival)
+        );
+      });
+
+      let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
+      filterdFlightCopy.forEach((element) => {
+        let durationMinute =
+          (new Date(element.arrival_time) - new Date(element.departure_time)) /
+          6000;
+        if (req.query.standardfare == "Phổ thông") {
+          element.price =
+            durationMinute * element.standardfare[0].price_per_minute;
+        }
+        if (req.query.standardfare == "Thương Gia") {
+          element.price =
+            durationMinute * element.standardfare[1].price_per_minute;
+        }
+      });
+      res.send({ flights: filterdFlightCopy });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        error: error,
+      });
+    }
+  },
+
+  filterFlight: async (req, res, next) => {
+    //departure,arrival, departure_time, standardfare
     try {
       let flights = await Flight.find({
         departure_time: req.query.departure_time,
@@ -261,26 +303,58 @@ module.exports = {
 
       let filterdFlight = flights.filter((aFlight) => {
         return (
-          (aFlight.departure.location == req.query.departure) &&
-          (aFlight.arrival.location == req.query.arrival)
+         (aFlight.departure.location = req.query.departure )&&
+         ( aFlight.arrival.location = req.query.arrival)
         );
       });
-      
-      let filterdFlightCopy =  JSON.parse(JSON.stringify(filterdFlight));
+
+      let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
       filterdFlightCopy.forEach((element) => {
         let durationMinute =
           (new Date(element.arrival_time) - new Date(element.departure_time)) /
           6000;
         if (req.query.standardfare == "Phổ thông") {
-          element.price = durationMinute * element.standardfare[0].price_per_minute ;
+          element.price =
+            durationMinute * element.standardfare[0].price_per_minute;
         }
         if (req.query.standardfare == "Thương Gia") {
-          element.price = durationMinute * element.standardfare[1].price_per_minute ;
+          element.price =
+            durationMinute * element.standardfare[1].price_per_minute;
         }
       });
+      if (
+        req.query.filterPitStop &&
+        req.query.filterDeparture_Hour &&
+        req.query.filterAirline &&
+        req.query.filterStandardFare
+      ) {
+        //Pit stop filter
+        if (req.query.filterPitStop > 1) {
+          filterdFlightCopy = filterdFlightCopy.filter((element) => {
+            return (element.pit_stop.length > 1)
+          })
+        }
+        else {
+          //Do nothing
+        }
+        if (req.query.filterDeparture_Hour == "Sáng") {
+          
+        }
+        else {
 
-     res.send({flights: filterdFlightCopy});
-     
+        }
+
+       //Filter airline
+       //Filter StandardFare
+       console.log("Send",   req.query.filterPitStop +
+       req.query.filterDeparture_Hour +
+       req.query.filterAirline +
+       req.query.filterStandardFare)
+      }
+      else {
+        console.log("Get out")
+      }
+      res.send(filterdFlightCopy);
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -298,20 +372,25 @@ module.exports = {
             populate: {
               path: "airline",
             },
-          });          
-          let filterdFlightCopy =  JSON.parse(JSON.stringify(flights));
+          });
+          let filterdFlightCopy = JSON.parse(JSON.stringify(flights));
           filterdFlightCopy.forEach((element) => {
             let durationMinute =
-              (new Date(element.arrival_time) - new Date(element.departure_time)) /
+              (new Date(element.arrival_time) -
+                new Date(element.departure_time)) /
               6000;
             if (req.query.standardfare == "Phổ thông") {
-              element.price = durationMinute * element.standardfare[0].price_per_minute ;
+              element.price =
+                durationMinute * element.standardfare[0].price_per_minute;
             }
             if (req.query.standardfare == "Thương Gia") {
-              element.price = durationMinute * element.standardfare[1].price_per_minute ;
+              element.price =
+                durationMinute * element.standardfare[1].price_per_minute;
             }
-          });          
-          filterdFlightCopy.sort((a,b) => { return a.price - b.price});
+          });
+          filterdFlightCopy.sort((a, b) => {
+            return a.price - b.price;
+          });
           res.send(filterdFlightCopy);
         } catch (error) {
           console.log(error);
@@ -319,7 +398,6 @@ module.exports = {
             error: error,
           });
         }
-
       }
       if (req.query.orderBy === "asc") {
         try {
@@ -328,20 +406,25 @@ module.exports = {
             populate: {
               path: "airline",
             },
-          });          
-          let filterdFlightCopy =  JSON.parse(JSON.stringify(flights));
+          });
+          let filterdFlightCopy = JSON.parse(JSON.stringify(flights));
           filterdFlightCopy.forEach((element) => {
             let durationMinute =
-              (new Date(element.arrival_time) - new Date(element.departure_time)) /
+              (new Date(element.arrival_time) -
+                new Date(element.departure_time)) /
               6000;
             if (req.query.standardfare == "Phổ thông") {
-              element.price = durationMinute * element.standardfare[0].price_per_minute ;
+              element.price =
+                durationMinute * element.standardfare[0].price_per_minute;
             }
             if (req.query.standardfare == "Thương Gia") {
-              element.price = durationMinute * element.standardfare[1].price_per_minute ;
+              element.price =
+                durationMinute * element.standardfare[1].price_per_minute;
             }
-          });          
-          filterdFlightCopy.sort((a,b) => { return b.price - a.price});
+          });
+          filterdFlightCopy.sort((a, b) => {
+            return b.price - a.price;
+          });
           res.send(filterdFlightCopy);
         } catch (error) {
           console.log(error);
@@ -351,9 +434,6 @@ module.exports = {
         }
       }
     }
-
-
-
     if (req.query.sortField === "departure_time") {
       //Sort by departure time
       if (req.query.orderBy === "desc") {

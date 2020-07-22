@@ -7,6 +7,8 @@ const controller = require('../controller/flight.controller')
 router.get('/',controller.getFlights);
 router.get('/search',controller.searchFlight);
 router.get('/sort',controller.sortFlight);
+router.get('/filter',controller.filterFlight);
+
 //GET /api/flight/:id
 router.get('/:id',controller.getFlight);
 
