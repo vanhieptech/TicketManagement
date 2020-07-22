@@ -32,10 +32,6 @@ function compareNameDesc(a, b) {
   return comparison;
 }
 
-function filterGender(a, filterGender) {
-  const gender = a.gender
-  return gender == filterGender;
-}
 
 module.exports = {
   postUser: (req, res) => {
@@ -56,6 +52,7 @@ module.exports = {
                 error: err
               });
             } else {
+              var now = new Date();
               var createddate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(),
                 now.getHours(), now.getMinutes(), now.getSeconds()));
               const user = new User({
@@ -129,43 +126,37 @@ module.exports = {
     const filterDOB = req.query.filterDOB;
     try {
       let users = await User.find().select('_id name phone dob gender email permission createdDate updatedDate').exec();
-      users.sort(compareNameAsc);
-      // let usersCopy = JSON.parse(JSON.stringify(users));
       // Mặc định là sort theo tên tăng
       if (filterGender !== null && filterGender !== undefined) {
         if (filterGender == 'Nam') {
-          users.filter(user => {
-            user.gender.includes('Nam');
+          users = users.filter(user => {
+            return user.gender.valueOf() == 'Nam'
           });
         } else {
-          users.filter(user => {
-            user.gender.includes('Nữ');
+          users = users.filter(user => {
+            return user.gender.valueOf() == 'Nữ'
           });
         }
       }
-      // if (filterDOB !== null && filterDOB !== undefined) {
-      //   usersCopy.filter(user => +user.dob.getFullYear() == +filterDOB);
-      // }
-      // if (sortField !== null && sortField !== undefined) {
-      //   if (sortField === 'name') {
-      //     if (orderBy === 'asc') usersCopy.sort(compareNameAsc);
-      //     else usersCopy.sort(compareNameDesc);
-      //   } else if (sortField === 'createdDate') {// Sort các user đó theo ngày tạo
-      //     if (orderBy === 'asc') {
-      //       usersCopy.sort((a, b) => {
-      //         return b.createdDate - a.createdDate;
-      //       });
-      //     } else {
-      //       usersCopy.sort((a, b) => {
-      //         return a.createdDate - b.createdDate;
-      //       });
-      //     }
-      //   }
-      // }
-     
-
-      console.log(users);
-
+      if (filterDOB !== null && filterDOB !== undefined) {
+        users = users.filter(user => +user.dob.getFullYear() == +filterDOB);
+      }
+      if (sortField !== null && sortField !== undefined) {
+        if (sortField === 'name') {
+          if (orderBy === 'asc') users.sort(compareNameAsc);
+          else users.sort(compareNameDesc);
+        } else if (sortField === 'createdDate') {// Sort các user đó theo ngày tạo
+          if (orderBy === 'asc') {
+            users.sort((a, b) => {
+              return b.createdDate - a.createdDate;
+            });
+          } else {
+            users.sort((a, b) => {
+              return a.createdDate - b.createdDate;
+            });
+          }
+        }
+      }
       res.status(200).json({
         count: users.length,
         users: users
@@ -179,7 +170,7 @@ module.exports = {
   },
   getUser: async (req, res) => {
     try {
-      const user = await User.findOne({ _id: req.params.id }).select('_id name phone email dob gender permission');
+      const user = await User.findOne({ _id: req.params.id }).select('_id name phone dob gender email permission createdDate updatedDate');
       res.status(200).json({
         user: user
       })
@@ -190,40 +181,4 @@ module.exports = {
       })
     }
   },
-  // sortUsers: async (req, res) => {
-  //   const sortfield = req.query.sortfield;
-  //   const order = req.query.orderby;
-  //   let users = null;
-  //   // Tìm tất cả các user từ db
-  //   try {
-  //     users = await User.find().exec();
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({
-  //       error: error
-  //     })
-  //   }
-  //   //Sort các user đó theo name 
-  //   if (sortfield === 'name') {
-  //     if (order === 'asc') {
-  //       users.sort(compareNameAsc);
-  //     } else {
-  //       users.sort(compareNameDesc);
-  //     }
-  //   } else if (sortfield === 'createddate') {// Sort các user đó theo ngày tạo
-  //     if (order === 'asc') {
-  //       users.sort((a, b) => {
-  //         return a.createdDate - b.createdDate;
-  //       });
-  //     } else {
-  //       users.sort((a, b) => {
-  //         return b.createdDate - a.createdDate;
-  //       });
-  //     }
-  //   }
-  //   res.status(200).json(users);
-  // },
-  // filterUsers: async (req, res) => {
-
-  // }
 };
