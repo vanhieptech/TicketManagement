@@ -253,34 +253,34 @@ module.exports = {
       let flights = await Flight.find({
         departure_time: req.query.departure_time,
       }).populate({
-        path: "aircraft departure arrival standardfare",
+        path: "departure arrival standardfare",
         populate: {
           path: "airline",
         },
       });
+
       let filterdFlight = flights.filter((aFlight) => {
         return (
           (aFlight.departure.location = req.query.departure) &&
           (aFlight.arrival.location = req.query.arrival)
         );
       });
-
-      filterdFlight.forEach((element) => {
-        let price = 0;
+      
+      let filterdFlightCopy =  JSON.parse(JSON.stringify(filterdFlight));
+      filterdFlightCopy.forEach((element) => {
         let durationMinute =
           (new Date(element.arrival_time) - new Date(element.departure_time)) /
           6000;
         if (req.query.standardfare == "Phổ thông") {
-          price = durationMinute * element.standardfare[0].price_per_minute;
+          element.price = durationMinute * element.standardfare[0].price_per_minute ;
         }
         if (req.query.standardfare == "Thương Gia") {
-          price = durationMinute * element.standardfare[1].price_per_minute;
+          element.price = durationMinute * element.standardfare[1].price_per_minute ;
         }
-        element.price = price;
       });
-      
-      res.send(filterdFlight);
-    //  res.send(filterdFlight);
+
+     res.send({flights: filterdFlightCopy});
+     
     } catch (error) {
       console.log(error);
       res.status(500).json({
