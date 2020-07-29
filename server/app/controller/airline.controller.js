@@ -1,15 +1,18 @@
-const Ticket = require('../models/ticket');
+const Airline = require('../models/airline');
+const moment = require('moment');
+const { Mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getTickets: (req, res) => {
-        Ticket
+    getAirlines: (req, res) => {
+        Airline
             .find()
-            .select('_id state flight seat order')
+            .select('_id name logo')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    tickets: docs
+                    airlines: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +23,11 @@ module.exports = {
                 })
             })
     },
-    getTicket: (req, res) => {
+    getAirline: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Airline
             .findById(id)
-            .select('_id state flight seat order')
+            .select('_id name logo')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +44,24 @@ module.exports = {
                 })
             });
     },
-    postTicket: (req, res) => {
-        const ticket = new Ticket({
-            state: req.body.state,
-            flight: req.body.flight,
-            seat: req.body.seat
+    postAirline: (req, res) => {
+        console.log(req.file);
+        const airline = new Airline({
+            _id: new mongoose.Types.ObjectId(),
+            name: req.body.name,
+            logo: req.file.path
         });
-        ticket.save().then(result => {
+        airline.save().then(result => {
             res.status(201).json({
-                message: "Ticket created successfully",
-                createdTicket: {
+                message: "Airline created successfully",
+                createdAirline: {
                     _id: result._id,
-                    state: result.state,
-                    flight: result.flight,
-                    seat: result.seat
+                    code: result.code,
+                    logo: result.logo
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/ticket/' + result._id,
+                    url: 'http://localhost:4000/api/airline/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +72,22 @@ module.exports = {
         });
 
     },
-    deleteTicket: (req, res) => {
+    deleteAirline: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Airline
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
+            .select('_id name logo')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket deleted successfully',
-                    deletedTicket: doc,
+                    message: 'Airline deleted successfully',
+                    deletedAirline: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/ticket',
+                        url: 'http://localhost:4000/api/airline',
                         body: {
-                            state: 'String',
-                            flight: 'ObjectId',
-                            seat: 'ObjectId'
+                            name: 'String',
+                            location: 'String'
                         }
                     }
                 });
@@ -97,18 +99,34 @@ module.exports = {
                 })
             });
     },
-    putTicket: (req, res) => {
+    putAirline: (req, res) => {
         const id = req.params.id;
-        Ticket.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
+        // const updateOps = {};
+        // for (const ops of req.body) {
+        //     updateOps[ops.propName] = ops.value;
+        // }
+        // { $set: updateOps }
+        let updates;
+        if (req.body.name === null || req.body.name === undefined) {
+            updates = {
+                logo: req.file.path
+            }
+        } else {
+            updates = {
+                name: req.body.name,
+                logo: req.file.path
+            }
+        }
+        Airline.findOneAndUpdate({ _id: id }, updates, { new: true, useFindAndModify: false })
+            .select('_id name logo')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket updated successfully',
-                    updatedTicket: doc,
+                    message: 'Airline updated successfully',
+                    updatedAirline: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/ticket/' + doc._id
+                        url: 'http://localhost:4000/api/airline/' + doc._id
                     }
                 })
             })
@@ -118,5 +136,5 @@ module.exports = {
                     error: err
                 })
             });
-    },
+    }
 }

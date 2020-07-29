@@ -1,26 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controller/ticket.controller')
-// const Ticket = require('../models/ticket');
 
-//GET /ticket
-router.get('/',controller.getTicket);
+
+//GET /api/ticket
+router.get('/',controller.getTickets);
+
+//GET /api/ticket/:id
+router.get('/:id',controller.getTicket);
 
 //POST /api/ticket
-router.post('/', (req,res) =>{
-    res.send({type:'GET'});
-});
+router.post('/', controller.postTicket);
 
 //PUT /api/ticket
-router.put('/', (req,res) =>{
-    res.send({type:'GET'});
-});
+router.put('/:id', controller.putTicket);
 
 //DELETE /api/ticket
-router.delete('/', (req,res) =>{
-    res.send({type:'GET'});
-});
-
-
+router.delete('/:id', controller.deleteTicket);
 
 module.exports = router;

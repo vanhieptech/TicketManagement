@@ -1,15 +1,18 @@
-const Ticket = require('../models/ticket');
+const Feedback = require('../models/feedback');
+const moment = require('moment');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getTickets: (req, res) => {
-        Ticket
+    getFeedbacks: (req, res) => {
+        Feedback
             .find()
-            .select('_id state flight seat order')
+            .select('_id comment user airline')
+            .populate('user airline', '_id name phone email dob gender password logo')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    tickets: docs
+                    aircraft: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +23,12 @@ module.exports = {
                 })
             })
     },
-    getTicket: (req, res) => {
+    getFeedback: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Feedback
             .findById(id)
-            .select('_id state flight seat order')
+            .select('_id comment user airline')
+            .populate('user airline', '_id name phone email dob gender password logo')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +45,25 @@ module.exports = {
                 })
             });
     },
-    postTicket: (req, res) => {
-        const ticket = new Ticket({
-            state: req.body.state,
-            flight: req.body.flight,
-            seat: req.body.seat
+    postFeedback: (req, res) => {
+        const feedback = new Feedback({
+            _id: new mongoose.Types.ObjectId(),
+            comment: req.body.comment,
+            user: req.body.user,
+            airline: req.body.airline
         });
-        ticket.save().then(result => {
+        feedback.save().then(result => {
             res.status(201).json({
-                message: "Ticket created successfully",
-                createdTicket: {
+                message: "Feedback created successfully",
+                createdFeedback: {
                     _id: result._id,
-                    state: result.state,
-                    flight: result.flight,
-                    seat: result.seat
+                    comment: result.comment,
+                    user: result.user,
+                    airline: result.airline
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/ticket/' + result._id,
+                    url: 'http://localhost:4000/api/feedback/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +74,23 @@ module.exports = {
         });
 
     },
-    deleteTicket: (req, res) => {
+    deleteFeedback: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Feedback
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
-            .exec()
+            .select('_id comment user airline')
+            .populate('user airline', '_id name phone email dob gender password logo')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket deleted successfully',
-                    deletedTicket: doc,
+                    message: 'Feedback deleted successfully',
+                    deletedFeedback: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/ticket',
+                        url: 'http://localhost:4000/api/feedback',
                         body: {
-                            state: 'String',
-                            flight: 'ObjectId',
-                            seat: 'ObjectId'
+                            comment: 'String',
+                            user: 'ObjectId',
+                            airline: 'ObjectId'
                         }
                     }
                 });
@@ -97,18 +102,19 @@ module.exports = {
                 })
             });
     },
-    putTicket: (req, res) => {
+    putFeedback: (req, res) => {
         const id = req.params.id;
-        Ticket.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
+        Feedback.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id comment user airline')
+            .populate('user airline', '_id name phone email dob gender password logo')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket updated successfully',
-                    updatedTicket: doc,
+                    message: 'Feedback updated successfully',
+                    updatedFeedback: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/ticket/' + doc._id
+                        url: 'http://localhost:4000/api/feedback/' + doc._id
                     }
                 })
             })
@@ -118,5 +124,5 @@ module.exports = {
                     error: err
                 })
             });
-    },
+    }
 }

@@ -1,15 +1,16 @@
-const Ticket = require('../models/ticket');
+const FAQ = require('../models/faq');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getTickets: (req, res) => {
-        Ticket
+    getFAQs: (req, res) => {
+        FAQ
             .find()
-            .select('_id state flight seat order')
+            .select('_id question answer')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    tickets: docs
+                    aircraft: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +21,11 @@ module.exports = {
                 })
             })
     },
-    getTicket: (req, res) => {
+    getFAQ: (req, res) => {
         const id = req.params.id;
-        Ticket
+        FAQ
             .findById(id)
-            .select('_id state flight seat order')
+            .select('_id question answer')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +42,23 @@ module.exports = {
                 })
             });
     },
-    postTicket: (req, res) => {
-        const ticket = new Ticket({
-            state: req.body.state,
-            flight: req.body.flight,
-            seat: req.body.seat
+    postFAQ: (req, res) => {
+        const faq = new FAQ({
+            _id: new mongoose.Types.ObjectId(),
+            question: req.body.quesion,
+            answer: req.body.answer
         });
-        ticket.save().then(result => {
+        faq.save().then(result => {
             res.status(201).json({
-                message: "Ticket created successfully",
-                createdTicket: {
+                message: "FAQ created successfully",
+                createdFAQ: {
                     _id: result._id,
-                    state: result.state,
-                    flight: result.flight,
-                    seat: result.seat
+                    question: result.question,
+                    answer: result.answer
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/ticket/' + result._id,
+                    url: 'http://localhost:4000/api/faq/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +69,21 @@ module.exports = {
         });
 
     },
-    deleteTicket: (req, res) => {
+    deleteFAQ: (req, res) => {
         const id = req.params.id;
-        Ticket
+        FAQ
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
-            .exec()
+            .select('_id question answer')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket deleted successfully',
-                    deletedTicket: doc,
+                    message: 'FAQ deleted successfully',
+                    deletedFAQ: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/ticket',
+                        url: 'http://localhost:4000/api/faq',
                         body: {
-                            state: 'String',
-                            flight: 'ObjectId',
-                            seat: 'ObjectId'
+                            question: 'String',
+                            answer: 'String'
                         }
                     }
                 });
@@ -97,18 +95,18 @@ module.exports = {
                 })
             });
     },
-    putTicket: (req, res) => {
+    putFAQ: (req, res) => {
         const id = req.params.id;
-        Ticket.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
+        FAQ.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id question answer')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket updated successfully',
-                    updatedTicket: doc,
+                    message: 'FAQ updated successfully',
+                    updatedFAQ: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/ticket/' + doc._id
+                        url: 'http://localhost:4000/api/faq/' + doc._id
                     }
                 })
             })
@@ -118,5 +116,5 @@ module.exports = {
                     error: err
                 })
             });
-    },
+    }
 }

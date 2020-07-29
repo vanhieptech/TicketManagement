@@ -1,15 +1,18 @@
-const Ticket = require('../models/ticket');
+const Regulation = require('../models/regulation');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getTickets: (req, res) => {
-        Ticket
+    getRegulations: (req, res) => {
+        console.log('Hello');
+        Regulation
             .find()
-            .select('_id state flight seat order')
+            .select('_id name value admin')
+            .populate('admin', '_id name phone email dob gender permission')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    tickets: docs
+                    regulations: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +23,12 @@ module.exports = {
                 })
             })
     },
-    getTicket: (req, res) => {
+    getRegulation: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Regulation
             .findById(id)
-            .select('_id state flight seat order')
+            .select('_id name value admin')
+            .populate('admin', '_id name phone email dob gender permission')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +45,25 @@ module.exports = {
                 })
             });
     },
-    postTicket: (req, res) => {
-        const ticket = new Ticket({
-            state: req.body.state,
-            flight: req.body.flight,
-            seat: req.body.seat
+    postRegulation: (req, res) => {
+        const regulation = new Regulation({
+            _id: new mongoose.Types.ObjectId(),
+            name: req.body.name,
+            value: req.body.value,
+            admin: req.body.admin
         });
-        ticket.save().then(result => {
+        regulation.save().then(result => {
             res.status(201).json({
-                message: "Ticket created successfully",
-                createdTicket: {
+                message: "Regulation created successfully",
+                createdRegulation: {
                     _id: result._id,
-                    state: result.state,
-                    flight: result.flight,
-                    seat: result.seat
+                    name: result.name,
+                    value: result.value,
+                    admin: result.admin
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/ticket/' + result._id,
+                    url: 'http://localhost:4000/api/regulation/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +74,23 @@ module.exports = {
         });
 
     },
-    deleteTicket: (req, res) => {
+    deleteRegulation: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Regulation
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
-            .exec()
+            .select('_id name value admin')
+            .populate('admin', '_id name phone email dob gender permission')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket deleted successfully',
-                    deletedTicket: doc,
+                    message: 'Regulation deleted successfully',
+                    deletedRegulation: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/ticket',
+                        url: 'http://localhost:4000/api/regulation',
                         body: {
-                            state: 'String',
-                            flight: 'ObjectId',
-                            seat: 'ObjectId'
+                            name: 'String',
+                            value: 'Number',
+                            admin: 'ObjectId'
                         }
                     }
                 });
@@ -97,18 +102,19 @@ module.exports = {
                 })
             });
     },
-    putTicket: (req, res) => {
+    putRegulation: (req, res) => {
         const id = req.params.id;
-        Ticket.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
+        Regulation.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id name value admin')
+            .populate('admin', '_id name phone email dob gender permission')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket updated successfully',
-                    updatedTicket: doc,
+                    message: 'Regulation updated successfully',
+                    updatedRegulation: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/ticket/' + doc._id
+                        url: 'http://localhost:4000/api/regulation/' + doc._id
                     }
                 })
             })
@@ -118,5 +124,5 @@ module.exports = {
                     error: err
                 })
             });
-    },
+    }
 }

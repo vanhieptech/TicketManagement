@@ -1,15 +1,16 @@
-const Ticket = require('../models/ticket');
+const Payment = require('../models/payment');
+const mongoose = require('mongoose');
 
 module.exports = {
-    getTickets: (req, res) => {
-        Ticket
+    getPayments: (req, res) => {
+        Payment
             .find()
-            .select('_id state flight seat order')
+            .select('_id card_id user_name amount')
             .exec()
             .then(docs => {
                 const response = {
                     count: docs.length,
-                    tickets: docs
+                    payments: docs
                 }
                 res.status(200).json(response);
             })
@@ -20,11 +21,11 @@ module.exports = {
                 })
             })
     },
-    getTicket: (req, res) => {
+    getPayment: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Payment
             .findById(id)
-            .select('_id state flight seat order')
+            .select('_id card_id user_name amount')
             .exec()
             .then(doc => {
                 if (doc) {
@@ -41,24 +42,25 @@ module.exports = {
                 })
             });
     },
-    postTicket: (req, res) => {
-        const ticket = new Ticket({
-            state: req.body.state,
-            flight: req.body.flight,
-            seat: req.body.seat
+    postPayment: (req, res) => {
+        const payment = new Payment({
+            _id: new mongoose.Types.ObjectId(),
+            card_id: req.body.card_id,
+            user_name: req.body.user_name,
+            amount: req.body.amount
         });
-        ticket.save().then(result => {
+        payment.save().then(result => {
             res.status(201).json({
-                message: "Ticket created successfully",
-                createdTicket: {
+                message: "Payment created successfully",
+                createdPayment: {
                     _id: result._id,
-                    state: result.state,
-                    flight: result.flight,
-                    seat: result.seat
+                    card_id: result.card_id,
+                    user_name: result.user_name,
+                    amount: result.amount
                 },
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:4000/api/ticket/' + result._id,
+                    url: 'http://localhost:4000/api/payment/' + result._id,
                 }
             })
         }).catch(err => {
@@ -69,23 +71,22 @@ module.exports = {
         });
 
     },
-    deleteTicket: (req, res) => {
+    deletePayment: (req, res) => {
         const id = req.params.id;
-        Ticket
+        Payment
             .findOneAndRemove({ _id: id }, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
-            .exec()
+            .select('_id card_id user_name amount')
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket deleted successfully',
-                    deletedTicket: doc,
+                    message: 'Payment deleted successfully',
+                    deletedPayment: doc,
                     request: {
                         type: 'POST',
-                        url: 'http://localhost:4000/api/ticket',
+                        url: 'http://localhost:4000/api/payment',
                         body: {
-                            state: 'String',
-                            flight: 'ObjectId',
-                            seat: 'ObjectId'
+                            card_id: 'String',
+                            user_name: 'String',
+                            amount: 'Number'
                         }
                     }
                 });
@@ -97,18 +98,18 @@ module.exports = {
                 })
             });
     },
-    putTicket: (req, res) => {
+    putPayment: (req, res) => {
         const id = req.params.id;
-        Ticket.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
-            .select('_id state flight seat order')
+        Payment.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+            .select('_id card_id user_name amount')
             .exec()
             .then(doc => {
                 res.status(200).json({
-                    message: 'Ticket updated successfully',
-                    updatedTicket: doc,
+                    message: 'Payment updated successfully',
+                    updatedPayment: doc,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:4000/api/ticket/' + doc._id
+                        url: 'http://localhost:4000/api/payment/' + doc._id
                     }
                 })
             })
@@ -118,5 +119,5 @@ module.exports = {
                     error: err
                 })
             });
-    },
+    }
 }
