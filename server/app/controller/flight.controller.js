@@ -8,6 +8,21 @@ module.exports = {
     if (req.query) {
       //Do querying thing
       //departure,arrival, departure_time, standardfare
+      let finalFlights = [];
+      let flights = [];
+      try {
+         flights = await Flight.find({
+          departure_time: req.query.departure_time,
+        }).populate({
+          path: "departure arrival standardfare",
+          populate: {
+            path: "airline",
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+
       if (
         req.query.departure &&
         req.query.arrival &&
@@ -16,27 +31,18 @@ module.exports = {
       ) {
         //Do search
         try {
-          let flights = await Flight.find({
-            departure_time: req.query.departure_time,
-          }).populate({
-            path: "departure arrival standardfare",
-            populate: {
-              path: "airline",
-            },
-          });
-    
           let filterdFlight = flights.filter((aFlight) => {
             return (
               aFlight.departure.location == req.query.departure &&
               aFlight.arrival.location == req.query.arrival
             );
           });
-    
+
           let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
-          let finalFlights = [];
           filterdFlightCopy.forEach((element) => {
             let durationMinute =
-              (new Date(element.arrival_time) - new Date(element.departure_time)) /
+              (new Date(element.arrival_time) -
+                new Date(element.departure_time)) /
               6000;
             if (req.query.standardfare == "Phổ Thông") {
               element.price =
@@ -49,103 +55,51 @@ module.exports = {
               finalFlights.push(element);
             }
           });
-          res.send({ flights: finalFlights });
+              if (
+                req.query.filterPitStop &&
+                req.query.filterDeparture_Hour &&
+                req.query.filterAirline &&
+                req.query.filterStandardFare
+              ) {
+                //Pit stop filter
+                if (req.query.filterPitStop > 1) {
+                  filterdFlightCopy = filterdFlightCopy.filter((element) => {
+                    return element.pit_stop.length > 0;
+                  });
+                } else {
+                  //Do nothing
+                }
+                if (req.query.filterDeparture_Hour == "Sáng") {
+                  filterdFlightCopy = filterdFlightCopy.filter((element) => {
+                    return (
+                      new Date(element.departure_time).getHours() > 0 &&
+                      new Date(element.departure_time).getHours() < 12
+                    );
+                  });
+                } else {
+                  filterdFlightCopy = filterdFlightCopy.filter((element) => {
+                    return new Date(element.departure_time).getHours() > 12;
+                  });
+                }
+                //  Filter airline
+                finalFlights = finalFlights.filter((element) => {
+                  return (
+                    element.standardfare[0].airline.name.localeCompare(
+                      req.query.filterAirline
+                    ) == 0
+                  );
+                });
+              } else {
+                res.status(500).json({
+                  error: error,
+                });
+          }
+          res.send(finalFlights);
         } catch (error) {
           console.log(error);
           res.status(500).json({
             error: error,
           });
-        }
-
-        if (
-          req.query.filterPitStop &&
-          req.query.filterDeparture_Hour &&
-          req.query.filterAirline &&
-          req.query.filterStandardFare) {
-          //Do query
-          try {
-            let flights = await Flight.find({
-              departure_time: req.query.departure_time,
-            }).populate({
-              path: "departure arrival standardfare",
-              populate: {
-                path: "airline",
-              },
-            });
-      
-            let filterdFlight = flights.filter((aFlight) => {
-              return (
-                (aFlight.departure.location = req.query.departure) &&
-                (aFlight.arrival.location = req.query.arrival)
-              );
-            });
-      
-            let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
-            let finalFlights = [];
-            filterdFlightCopy.forEach((element) => {
-              let durationMinute =
-                (new Date(element.arrival_time) - new Date(element.departure_time)) /
-                6000;
-              if (req.query.standardfare == "Phổ Thông") {
-                element.price =
-                  durationMinute * element.standardfare[0].price_per_minute;
-                finalFlights.push(element);
-                console.log("Final: ", finalFlights);
-              }
-              if (req.query.standardfare == "Thương gia") {
-                element.price =
-                  durationMinute * element.standardfare[1].price_per_minute;
-                finalFlights.push(element);
-                console.log("Final: ", finalFlights);
-              }
-            });
-            if (
-              req.query.filterPitStop &&
-              req.query.filterDeparture_Hour &&
-              req.query.filterAirline &&
-              req.query.filterStandardFare
-            ) {
-              //Pit stop filter
-              if (req.query.filterPitStop > 1) {
-                filterdFlightCopy = filterdFlightCopy.filter((element) => {
-                  return element.pit_stop.length > 0;
-                });
-              } else {
-                //Do nothing
-              }
-              if (req.query.filterDeparture_Hour == "Sáng") {
-                filterdFlightCopy = filterdFlightCopy.filter((element) => {
-                  return (
-                    new Date(element.departure_time).getHours() > 0 &&
-                    new Date(element.departure_time).getHours() < 12
-                  );
-                });
-              } else {
-                filterdFlightCopy = filterdFlightCopy.filter((element) => {
-                  return new Date(element.departure_time).getHours() > 12;
-                });
-              }
-              //  Filter airline
-              finalFlights = finalFlights.filter((element) => {
-                return (
-                  element.standardfare[0].airline.name.localeCompare(
-                    req.query.filterAirline
-                  ) == 0
-                );
-              });
-            } else {
-              res.status(500).json({
-                error: error,
-              });
-            }
-            res.send(finalFlights);
-          } catch (error) {
-            console.log(error);
-            res.status(500).json({
-              error: error,
-            });
-          }
-
         }
       } else {
         res.end();
@@ -408,8 +362,8 @@ module.exports = {
 
       let filterdFlight = flights.filter((aFlight) => {
         return (
-          ( aFlight.departure.location.localeCompare(req.query.departure) ==0) &&
-          (aFlight.arrival.location.localeCompare(req.query.arrival)  ==0 )
+          aFlight.departure.location.localeCompare(req.query.departure) == 0 &&
+          aFlight.arrival.location.localeCompare(req.query.arrival) == 0
         );
       });
 
