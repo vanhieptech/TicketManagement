@@ -1,0 +1,19 @@
+{
+	"menu": {
+		"primary": [
+			{
+				"title": "Home",
+				"link": "/",
+				"sub": null,
+				"external": true
+			}
+		],
+		"footer": []
+	},
+	"homepage": "/",
+	"layout": "default",
+	"logo": "https://mhealth-beta.s3.amazonaws.com/cms/11CuLAAmuGVP2nO3.png",
+	"favicon": "https://mhealth-beta.s3.amazonaws.com/cms/11CuLAAmuGVP2nO3.png",
+	"title": "Nuxt Vuetify Template",
+	"copyright": "@2015 - 2020 mHealth Technologies"
+}
