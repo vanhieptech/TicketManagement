@@ -4,7 +4,7 @@ import apiCall, { IApiCallOptions } from './api'
 import { flight } from '../services'
 declare module 'vue/types/vue' {
   interface Vue {
-    $api: {
+    $apiClient: {
       getListFlights(data: any): Promise<IResp>
     }
     $user: {
@@ -21,7 +21,7 @@ declare module 'vue/types/vue' {
 
 declare module '@nuxt/types/app' {
   interface NuxtAppOptions {
-    $api: {
+    $apiClient: {
       getListFlights(data: any): Promise<IResp>
     }
     $user: {
@@ -32,14 +32,14 @@ declare module '@nuxt/types/app' {
       setToken(token: string): any
       redirect(token: string): any
     }
-    $apiCall(options: IApiCallOptions, cb?: any): Promise<IResp>
+
 
   }
 }
 
 declare module 'vuex/types/index' {
   interface Store<S> {
-    $api: {
+    $apiClient: {
       getListFlights(data: any): Promise<IResp>
     }
     $user: {
@@ -50,13 +50,13 @@ declare module 'vuex/types/index' {
       setToken(token: string): any
       redirect(token: string): any
     }
-    $apiCall(options: IApiCallOptions, cb?: any): Promise<IResp>
+
 
   }
 }
 
 const pluginServices: Plugin = ({ app, $config }: Context, inject) => {
-  inject('$api', {
+  inject('apiClient', {
     getListFlights: (data: any) => flight.getListFlights(app, data),
   })
   inject('user', {

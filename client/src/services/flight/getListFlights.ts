@@ -10,9 +10,10 @@ export default function (app: NuxtAppOptions, { patientId = "", fields = "", pag
     pageSize,
     pageIndex
   }
+  console.log(`query`, query)
   return app.$apiCall({
-    url: `/api/user/get-list-consultation`,
-    query,
+    url: `/api/flight`,
+    // query,
     method: 'get'
   })
 }

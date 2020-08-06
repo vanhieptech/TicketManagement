@@ -34,7 +34,7 @@ const config: NuxtConfig = {
     scss: [],
   },
   plugins: [
-    // '~/plugins/services.ts'
+    '~/plugins/services.ts'
   ],
   modules: [
     ['@nuxtjs/robots', { UserAgent: '*', Disallow: '*' }],
@@ -116,9 +116,9 @@ const config: NuxtConfig = {
   vuetify: {
     optionsPath: '~/static/theme/index.ts',
   },
-  // axios: {
-  // 	debug: false
-  // }
+  axios: {
+    debug: false
+  }
 }
 
 export default config
