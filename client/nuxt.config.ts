@@ -1,12 +1,12 @@
 import { NuxtConfig } from '@nuxt/types'
 import HeadConfig from './src/configs/head.config.json'
-import AppConfig from './src/configs/app.config.json'
+// import AppConfig from './src/configs/app.config.json'
 
 const dev = process.env.NODE_ENV === 'development'
 const env = process.env
 
 const config: NuxtConfig = {
-  mode: 'spa', // spa universal
+  mode: 'spa',
   dev,
   env: {
     NODE_ENV: process.env.NODE_ENV || 'development'
@@ -16,17 +16,17 @@ const config: NuxtConfig = {
   //   "host": env.HOST,
   //   "app": AppConfig
   // },
-  // publicRuntimeConfig: {
-  //   "cdnHost": env.CDN_HOST,
-  //   "accountBaseUrl": env.ACCOUNT_BASE_URL,
-  //   "apiGatewayEndpoint": env.API_GATEWAY_ENDPOINT,
-  //   "endpoint": env.API_ENDPOINT,
-  //   "socketEndpoint": env.SOCKET_ENDPOINT,
-  //   "jwt": {
-  //     "appId": env.APP_ID,
-  //     "appSecret": env.APP_SECRET
-  //   }
-  // },
+  publicRuntimeConfig: {
+    // "cdnHost": env.CDN_HOST,
+    // "accountBaseUrl": env.ACCOUNT_BASE_URL,
+    // "apiGatewayEndpoint": env.API_GATEWAY_ENDPOINT,
+    "endpoint": env.API_ENDPOINT,
+    // "socketEndpoint": env.SOCKET_ENDPOINT,
+    // "jwt": {
+    //   "appId": env.APP_ID,
+    //   "appSecret": env.APP_SECRET
+    // }
+  },
   head: HeadConfig,
   loading: false, // using 'false' if you dont want using default loading
   css: [],

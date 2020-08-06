@@ -1,5 +1,5 @@
 {
-    "title": "Template Nuxt Vuetify",
+    "title": "Travels For Fun",
     "htmlAttrs": {
         "lang": "vi"
     },
@@ -8,10 +8,10 @@
         { "name": "title", "content": "video conferencing" },
         { "name": "description", "content": "video conferencing" },
         { "name": "viewport", "content": "width=device-width, initial-scale=1.0" },
-        { "name":"robots", "content":"noindex,noarchive,nofollow"}
+        { "name": "robots", "content": "noindex,noarchive,nofollow" }
     ],
     "link": [
-        { "rel": "icon", "type": "image/x-icon", "href": "https://mhealth-beta.s3.amazonaws.com/cms/11CuLAAmuGVP2nO3.png" },
+        { "rel": "icon", "type": "image/x-icon", "href": "https://image.freepik.com/free-vector/air-plane-icon-illustration_138676-278.jpg" },
         { "rel": "stylesheet", "href": "https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" },
         { "rel": "stylesheet", "href": "https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" },
         { "href": "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css", "rel": "stylesheet" }
