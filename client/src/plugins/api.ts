@@ -21,7 +21,7 @@ const api = function (app: NuxtAppOptions, $config: NuxtRuntimeConfig, { apiEndP
   if ($config && $config.endpoint) {
     apiEndPoint = $config.endpoint
   }
-
+  console.log(`api call line 24`, $config)
   let fullUrl = external ? url : apiEndPoint + url
   // const locale = app.$cookies.get('locale') || 'vi'
   // add query locale

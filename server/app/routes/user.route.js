@@ -6,6 +6,7 @@ const checkauth = require("../middlewares/check-auth.mdw");
 //GET /api/user
 
 router.get("/", checkauth.checkAdmin, controller.getUsers);
+// router.get("/", controller.getUsers);
 
 //GET /api/user/:id
 router.get("/:id", checkauth.checkAdmin, controller.getUser);
