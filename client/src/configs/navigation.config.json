@@ -1,0 +1,16 @@
+{
+    "menu": {
+        "primary": [{
+            "title": "Home",
+            "link": "/",
+            "sub": null,
+            "external": true
+        }],
+        "footer": []
+    },
+    "homepage": "/",
+    "layout": "default",
+    "logo": "/image/logo.jpg",
+    "favicon": "/image/logo.jpg",
+    "title": "Ticket For Fun"
+}

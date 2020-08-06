@@ -1,13 +1,14 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controller = require('../controller/user.controller')
-const checkauth = require('../middlewares/check-auth.mdw')
-
+const controller = require("../controller/user.controller");
+const checkauth = require("../middlewares/check-auth.mdw");
 
 //GET /api/user
-router.get('/', checkauth.checkAdmin, controller.getUsers);
+
+router.get("/", checkauth.checkAdmin, controller.getUsers);
+// router.get("/", controller.getUsers);
 
 //GET /api/user/:id
-router.get('/:id', checkauth.checkAdmin, controller.getUser);
+router.get("/:id", checkauth.checkAdmin, controller.getUser);
 
 module.exports = router;
