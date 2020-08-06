@@ -116,9 +116,9 @@ const config: NuxtConfig = {
   vuetify: {
     optionsPath: '~/static/theme/index.ts',
   },
-  axios: {
-    debug: false
-  }
+  // axios: {
+  //   debug: false
+  // }
 }
 
 export default config

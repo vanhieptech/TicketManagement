@@ -33,7 +33,7 @@ declare module '@nuxt/types/app' {
       redirect(token: string): any
     }
 
-
+    $apiCall(options: IApiCallOptions, cb?: any): Promise<IResp>
   }
 }
 
@@ -50,7 +50,7 @@ declare module 'vuex/types/index' {
       setToken(token: string): any
       redirect(token: string): any
     }
-
+    $apiCall(options: IApiCallOptions, cb?: any): Promise<IResp>
 
   }
 }

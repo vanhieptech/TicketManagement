@@ -8,10 +8,7 @@
 
       -->
       <v-avatar>
-        <img
-          src="https://image.freepik.com/free-vector/air-plane-icon-illustration_138676-278.jpg"
-          alt="logo"
-        />
+        <img src="/image/logo.jpg" alt="logo" />
       </v-avatar>
       <v-toolbar-title class="font-weight-bold text-uppercase pl-3">Tralvel for fun</v-toolbar-title>
       <template v-slot:extension>
