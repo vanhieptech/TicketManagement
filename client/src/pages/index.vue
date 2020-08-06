@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-3">
+  <div>
     <search-flight></search-flight>
   </div>
 </template>
