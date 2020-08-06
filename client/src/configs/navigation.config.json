@@ -10,7 +10,7 @@
     },
     "homepage": "/",
     "layout": "default",
-    "logo": "https://image.freepik.com/free-vector/air-plane-icon-illustration_138676-278.jpg",
-    "favicon": "https://image.freepik.com/free-vector/air-plane-icon-illustration_138676-278.jpg",
+    "logo": "/image/logo.jpg",
+    "favicon": "/image/logo.jpg",
     "title": "Ticket For Fun"
 }
