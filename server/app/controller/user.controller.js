@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const jwt = require('jsonwebtoken');
 const { create } = require("../models/user");
+const { response } = require("express");
 
 function compareNameAsc(a, b) {
   // Use toUpperCase() to ignore character casing
@@ -181,4 +182,46 @@ module.exports = {
       })
     }
   },
+  putUser: async (req, res) => {
+    try {
+      const hashPassword = await bcrypt.hash(req.body.password, 10);
+      req.body.password = hashPassword;
+      const updatedUser = await User.findOneAndUpdate({ _id: id }, req.body, { new: true, useFindAndModify: false })
+        .select('_id name phone dob gender email permission createdDate updatedDate');
+      if (updatedUser) {
+        res.status(200).json({
+          message: 'User updated successfully',
+          results: updatedUser
+        });
+      } else {
+        res.status(200).json({
+          message: 'User updated unsuccessful',
+          results: false
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      })
+    }
+  },
+  checkOldPassword: async (req, res) => {
+    let user = await User.findById(req.params.id);
+    //Kiểm tra mật khẩu cũ xem đúng không
+    try {
+      const results = bcrypt.compare(req.body.oldpassword, user.password);
+      console.log(results);
+      res.status(200).json({
+        message: 'Old password correct',
+        results: true
+      })
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({
+        message: 'Old password incorrect',
+        results: false
+      })
+    }
+  }
 };

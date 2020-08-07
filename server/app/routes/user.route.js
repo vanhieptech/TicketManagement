@@ -13,6 +13,10 @@ router.post('/login', controller.login);
 //GET /api/user/:id
 router.get('/:id', checkauth.checkAdmin, controller.getUser);
 
+//GET /api/user/:id
+router.put('/:id', checkauth.checkCustomer, controller.putUser);
+
+router.get('/:id/checkoldpassword', controller.checkOldPassword);
 
 //GET /api/user
 router.post('/', checkauth.checkAdmin, controller.postUser);

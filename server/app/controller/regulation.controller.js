@@ -10,11 +10,11 @@ module.exports = {
             .populate('admin', '_id name phone email dob gender permission')
             .exec()
             .then(docs => {
-                const response = {
-                    count: docs.length,
-                    regulations: docs
-                }
-                res.status(200).json(response);
+                // const response = {
+                //     count: docs.length,
+                //     regulations: docs
+                // }
+                res.status(200).json(docs);
             })
             .catch(err => {
                 console.log(err);
