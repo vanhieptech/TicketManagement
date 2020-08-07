@@ -5,7 +5,7 @@ const Aircraft = require("../models/aircraft");
 const ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {
-    getFlights: (req, res) => {
+    getFlights: async (req, res) => {
         if (req.query) {
             //Do querying thing
             //departure,arrival, departure_time, standardfare
@@ -34,8 +34,8 @@ module.exports = {
               try {
                 let filterdFlight = flights.filter((aFlight) => {
                   return (
-                    aFlight.departure.location == req.query.departure &&
-                    aFlight.arrival.location == req.query.arrival
+                    aFlight.departure.code == req.query.departure &&
+                    aFlight.arrival.code == req.query.arrival
                   );
                 });
       
