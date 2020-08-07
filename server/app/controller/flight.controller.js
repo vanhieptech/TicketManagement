@@ -6,63 +6,154 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {
     getFlights: (req, res) => {
-        Flight.find()
-            .select(
+        if (req.query) {
+            //Do querying thing
+            //departure,arrival, departure_time, standardfare
+            let finalFlights = [];
+            let flights = [];
+            try {
+               flights = await Flight.find({
+                departure_time: req.query.departure_time,
+              }).populate({
+                path: "departure arrival standardfare",
+                populate: {
+                  path: "airline",
+                },
+              });
+            } catch (e) {
+              console.log(e);
+            }
+      
+            if (
+              req.query.departure &&
+              req.query.arrival &&
+              req.query.departure_time &&
+              req.query.standardfare
+            ) {
+              //Do search
+              try {
+                let filterdFlight = flights.filter((aFlight) => {
+                  return (
+                    aFlight.departure.location == req.query.departure &&
+                    aFlight.arrival.location == req.query.arrival
+                  );
+                });
+      
+                let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
+                filterdFlightCopy.forEach((element) => {
+                  let durationMinute =
+                    (new Date(element.arrival_time) -
+                      new Date(element.departure_time)) /
+                    6000;
+                  if (req.query.standardfare == "Phổ Thông") {
+                    element.price =
+                      durationMinute * element.standardfare[0].price_per_minute;
+                    finalFlights.push(element);
+                  }
+                  if (req.query.standardfare == "Thương gia") {
+                    element.price =
+                      durationMinute * element.standardfare[1].price_per_minute;
+                    finalFlights.push(element);
+                  }
+                });
+                    if (
+                      req.query.filterPitStop &&
+                      req.query.filterDeparture_Hour &&
+                      req.query.filterAirline &&
+                      req.query.filterStandardFare
+                    ) {
+                      //Pit stop filter
+                      if (req.query.filterPitStop > 1) {
+                        filterdFlightCopy = filterdFlightCopy.filter((element) => {
+                          return element.pit_stop.length > 0;
+                        });
+                      } else {
+                        //Do nothing
+                      }
+                      if (req.query.filterDeparture_Hour == "Sáng") {
+                        filterdFlightCopy = filterdFlightCopy.filter((element) => {
+                          return (
+                            new Date(element.departure_time).getHours() > 0 &&
+                            new Date(element.departure_time).getHours() < 12
+                          );
+                        });
+                      } else {
+                        filterdFlightCopy = filterdFlightCopy.filter((element) => {
+                          return new Date(element.departure_time).getHours() > 12;
+                        });
+                      }
+                      //  Filter airline
+                      finalFlights = finalFlights.filter((element) => {
+                        return (
+                          element.standardfare[0].airline.name.localeCompare(
+                            req.query.filterAirline
+                          ) == 0
+                        );
+                      });
+                    } else {
+                      res.status(500).json({
+                        error: error,
+                      });
+                }
+                res.send(finalFlights);
+              } catch (error) {
+                console.log(error);
+                res.status(500).json({
+                  error: error,
+                });
+              }
+            } else {
+              res.end();
+            }
+          } else {
+            Flight.find()
+              .select(
                 "_id code departure_time arrival_time departure arrival pit_stop aircraft"
-            )
-            .populate({
+              )
+              .populate({
                 path: "pit_stop arrival departure",
                 select: "_id code name location",
-            })
-            .populate({
+              })
+              .populate({
                 path: "aircraft",
                 select: "_id code airline seats",
                 populate: {
-                    path: "airline seats",
-                    select: "_id name logo type seat_number price aircraft",
+                  path: "airline seats",
+                  select: "_id name logo type seat_number price aircraft",
                 },
-            })
-            .exec()
-            .then((docs) => {
+              })
+              .exec()
+              .then((docs) => {
                 if (docs === undefined) {
-                    res.status(200).json({
-                        code: 200,
-                        message: "No entity found",
-                        results: {
-                            count: docs.length,
-                            flights: [],
-                        },
-                    });
+                  res.status(200).json({
+                    count: docs.length,
+                    flights: [],
+                  });
                 }
                 const response = {
-                    code: 200,
-                    message: "Success",
-                    results: {
-                        count: docs.length,
-                        flights: docs.map((doc) => {
-                            return {
-                                _id: doc._id,
-                                code: doc.code,
-                                departure_time: doc.departure_time,
-                                arrival_time: doc.arrival_time,
-                                departure: doc.departure,
-                                arrival: doc.arrival,
-                                pit_stop: doc.pit_stop,
-                                aircraft: doc.aircraft,
-                            };
-                        }),
-                    },
+                  count: docs.length,
+                  flights: docs.map((doc) => {
+                    return {
+                      _id: doc._id,
+                      code: doc.code,
+                      departure_time: doc.departure_time,
+                      arrival_time: doc.arrival_time,
+                      departure: doc.departure,
+                      arrival: doc.arrival,
+                      pit_stop: doc.pit_stop,
+                      aircraft: doc.aircraft,
+                    };
+                  }),
                 };
                 res.status(200).json(response);
-            })
-            .catch((err) => {
+              })
+              .catch((err) => {
                 console.log(err);
                 res.status(500).json({
-                    code: 500,
-                    message: "Error",
-                    results: {},
+                  error: err,
                 });
-            });
+              });
+          }
     },
     getFlight: (req, res) => {
         const id = req.params.id;
