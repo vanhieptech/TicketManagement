@@ -74,7 +74,7 @@ module.exports = {
                 phone: req.body.phone,
                 dob: req.body.dob,
                 gender: req.body.gender,
-                permission: 'ROLE_ADMIN',
+                permission: 'ROLE_USER',
                 createdDate: createddate,
                 updatedDate: createddate,
               });
