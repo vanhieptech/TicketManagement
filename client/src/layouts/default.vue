@@ -1,16 +1,13 @@
 <template>
   <v-app>
     <v-app-bar app fixed extension-height="50" mobile-breakpoint="500" color="primary" dark>
-      <!--
-      <template v-slot:img="{ props }">
-        <v-img v-bind="props" gradient="to top right, rgba(19,84,122,.5), rgba(128,208,199,.8)"></v-img>
-      </template>
-
-      -->
-      <v-avatar>
-        <img src="/image/logo.jpg" alt="logo" />
+      <v-avatar @click="$router.push('/')">
+        <img src="/image/logo.png" alt="logo" />
       </v-avatar>
-      <v-toolbar-title class="font-weight-bold text-uppercase pl-3">Tralvel for fun</v-toolbar-title>
+      <v-toolbar-title
+        class="font-weight-bold text-uppercase pl-3"
+        @click="$router.push('/')"
+      >Tralvel for fun</v-toolbar-title>
       <template v-slot:extension>
         <v-tabs background-color="secondary" centered slider-color="yellow">
           <v-tab class="font-weight-bold text-uppercase">

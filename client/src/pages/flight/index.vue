@@ -134,17 +134,29 @@
           </v-col>
         </v-row>
         <v-row dense>
-          <v-col cols="12">
+          <v-col v-for="flight in flights" :key="flight._id" cols="12">
             <v-card elevation="0" outlined>
               <v-card-title>
                 <v-row dense>
                   <v-col cols="12" md="7">
                     <v-row dense>
-                      <v-col cols="12" sm="6" md="5" class="text-body-2">VN 6028 | Airbus A320</v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="5"
+                        class="text-body-2"
+                      >{{flight.code}} | Airbus A320</v-col>
                       <v-col cols="12" sm="6" md="7">
-                        23:10 (SGN)
+                        {{flight.departure_time | formatTime("HH:mm")}}
+                        <span
+                          v-if="flight.departure"
+                        >({{flight.departure.code}})</span>
+
                         <img src="/image/path.png" alt />
-                        01:20 (HAN)
+                        {{flight.arrival_time | formatTime("HH:mm")}}
+                        <span
+                          v-if="flight.arrival"
+                        >({{flight.arrival.code}})</span>
                       </v-col>
                     </v-row>
                   </v-col>
@@ -153,7 +165,7 @@
                     <v-row dense>
                       <v-col cols="12" sm="6" md="6">
                         <span class="text-body-2">
-                          2h10m •
+                          {{getFlightTime(flight.departure_time,flight.arrival_time)}} •
                           Direct flight
                         </span>
                       </v-col>
@@ -173,281 +185,13 @@
                       <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
                     </v-row>
                   </v-col>
-
                   <v-col cols="12" md="5" class="d-flex align-center">
                     <v-row dense>
                       <v-col cols="12" sm="6" md="6">
-                        <span class="font-weight-bold text-h6" style="color:#FF5722;">630000</span> &nbsp;VND
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn color="primary" elevation="0">choice</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card elevation="0" outlined>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="12" md="7">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5" class="text-body-2">VN 6028 | Airbus A320</v-col>
-                      <v-col cols="12" sm="6" md="7">
-                        23:10 (SGN)
-                        <img src="/image/path.png" alt />
-                        01:20 (HAN)
-                      </v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="text-body-2">
-                          2h10m •
-                          Direct flight
-                        </span>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn outlined>detail</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text class="py-0">
-                <v-row dense>
-                  <v-col cols="12" md="7" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5">Economy</v-col>
-                      <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="font-weight-bold text-h6" style="color:#FF5722;">630000</span> &nbsp;VND
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn color="primary" elevation="0">choice</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card elevation="0" outlined>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="12" md="7">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5" class="text-body-2">VN 6028 | Airbus A320</v-col>
-                      <v-col cols="12" sm="6" md="7">
-                        23:10 (SGN)
-                        <img src="/image/path.png" alt />
-                        01:20 (HAN)
-                      </v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="text-body-2">
-                          2h10m •
-                          Direct flight
-                        </span>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn outlined>detail</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text class="py-0">
-                <v-row dense>
-                  <v-col cols="12" md="7" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5">Economy</v-col>
-                      <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="font-weight-bold text-h6" style="color:#FF5722;">630000</span> &nbsp;VND
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn color="primary" elevation="0">choice</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card elevation="0" outlined>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="12" md="7">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5" class="text-body-2">VN 6028 | Airbus A320</v-col>
-                      <v-col cols="12" sm="6" md="7">
-                        23:10 (SGN)
-                        <img src="/image/path.png" alt />
-                        01:20 (HAN)
-                      </v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="text-body-2">
-                          2h10m •
-                          Direct flight
-                        </span>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn outlined>detail</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text class="py-0">
-                <v-row dense>
-                  <v-col cols="12" md="7" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5">Economy</v-col>
-                      <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="font-weight-bold text-h6" style="color:#FF5722;">630000</span> &nbsp;VND
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn color="primary" elevation="0">choice</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card elevation="0" outlined>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="12" md="7">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5" class="text-body-2">VN 6028 | Airbus A320</v-col>
-                      <v-col cols="12" sm="6" md="7">
-                        23:10 (SGN)
-                        <img src="/image/path.png" alt />
-                        01:20 (HAN)
-                      </v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="text-body-2">
-                          2h10m •
-                          Direct flight
-                        </span>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn outlined>detail</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text class="py-0">
-                <v-row dense>
-                  <v-col cols="12" md="7" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5">Economy</v-col>
-                      <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="font-weight-bold text-h6" style="color:#FF5722;">630000</span> &nbsp;VND
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn color="primary" elevation="0">choice</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
-          <v-col cols="12">
-            <v-card elevation="0" outlined>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="12" md="7">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5" class="text-body-2">VN 6028 | Airbus A320</v-col>
-                      <v-col cols="12" sm="6" md="7">
-                        23:10 (SGN)
-                        <img src="/image/path.png" alt />
-                        01:20 (HAN)
-                      </v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="text-body-2">
-                          2h10m •
-                          Direct flight
-                        </span>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn outlined>detail</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text class="py-0">
-                <v-row dense>
-                  <v-col cols="12" md="7" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5">Economy</v-col>
-                      <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
-                    </v-row>
-                  </v-col>
-
-                  <v-col cols="12" md="5" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="font-weight-bold text-h6" style="color:#FF5722;">630000</span> &nbsp;VND
+                        <span
+                          class="font-weight-bold text-h6"
+                          style="color:#FF5722;"
+                        >{{flight.price}}</span> &nbsp;VND
                       </v-col>
                       <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
                         <v-btn color="primary" elevation="0">choice</v-btn>
@@ -467,9 +211,11 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 import FlightRepo from "@/repositories/flights";
+import dayjs from "dayjs";
+
 @Component
 export default class Flight extends Vue {
-  fligths: any = null;
+  flights: any = {};
   flightRepo: FlightRepo = FlightRepo.getInstance(this);
   items = [
     { value: false, title: "00:00 - 06:00" },
@@ -477,12 +223,33 @@ export default class Flight extends Vue {
     { value: false, title: "12:00 - 18:00" },
     { value: false, title: "18:00 - 24:00" },
   ];
+  value: any = "";
   async mounted() {
-    this.fligths = await this.flightRepo.getListFlights();
-    console.log(`results flights`, this.fligths);
+    const query = this.$route.query
+      ? this.$route.query
+      : {
+          departure: "",
+          departure_time: new Date().toString(),
+          arrival: "",
+          standardfare: "",
+        };
+
+    this.flights = await this.flightRepo.getListFlights(query);
+    console.log(`results flights`, this.flights);
+  }
+  getFlightTime(departureTime, arrivalTime) {
+    console.log(departureTime);
+    const time = dayjs(arrivalTime).diff(departureTime, "minute");
+
+    return time / 60 + "h" + (time % 60 === 0 ? "00" : time % 60);
   }
 }
 </script>
 
 <style scoped>
+@media (min-width: 1264px) {
+  .container {
+    max-width: 1160px;
+  }
+}
 </style>

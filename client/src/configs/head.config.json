@@ -13,7 +13,7 @@
     "link": [{
             "rel": "icon",
             "type": "image/x-icon",
-            "href": "/image/logo.jpg"
+            "href": "/image/logo.png"
         },
         {
             "rel": "stylesheet",

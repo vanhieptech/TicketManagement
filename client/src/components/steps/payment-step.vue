@@ -72,7 +72,12 @@
           <v-radio-group v-model="paymentMethod" class="mt-0" :mandatory="false">
             <v-expansion-panels accordion>
               <v-expansion-panel v-for="(payment,i) in paymentList" :key="i">
-                <v-expansion-panel-header v-slot="{ open }" hide-actions style="height:80px;">
+                <v-expansion-panel-header
+                  v-slot="{ open }"
+                  v-ripple="{ class: `primary--text` }"
+                  hide-actions
+                  style="height:80px;"
+                >
                   <v-radio v-model="payment.value" :value="open ? payment.value:''">
                     <template v-slot:label>
                       <img class="mx-3" :src="`/image/${payment.image}`" width="50" alt="atm" />

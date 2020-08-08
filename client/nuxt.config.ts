@@ -34,7 +34,8 @@ const config: NuxtConfig = {
     scss: [],
   },
   plugins: [
-    '~/plugins/services.ts'
+    '~/plugins/services.ts',
+    '~/plugins/utils.ts'
   ],
   modules: [
     ['@nuxtjs/robots', { UserAgent: '*', Disallow: '*' }],
