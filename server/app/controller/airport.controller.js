@@ -8,8 +8,9 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    airports: docs
+                    code: 200,
+                    message: 'Get airports successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
@@ -28,7 +29,10 @@ module.exports = {
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json(doc);
+                    res.status(200).json({
+                        code: 200,
+                        message: 'Get airport successfully',
+                        results: doc});
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -49,17 +53,14 @@ module.exports = {
         });
         airport.save().then(result => {
             res.status(201).json({
+                code: 201,
                 message: "Airport created successfully",
-                createdAirport: {
+                results: {
                     _id: result._id,
                     code: result.code,
                     name: result.name,
                     location: result.location
                 },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:4000/api/airport/' + result._id,
-                }
             })
         }).catch(err => {
             console.log(err);
@@ -77,17 +78,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Airport deleted successfully',
-                    deletedAirport: doc,
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:4000/api/airport',
-                        body: {
-                            code: 'String',
-                            name: 'String',
-                            location: 'String'
-                        }
-                    }
+                    results: doc,
                 });
             })
             .catch(err => {
@@ -109,12 +102,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Airport updated successfully',
-                    updatedAirport: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:4000/api/airport/' + doc._id
-                    }
+                    results: doc
                 })
             })
             .catch(err => {

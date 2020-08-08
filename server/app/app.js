@@ -7,8 +7,10 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const cors = require('cors');
+const dotenv = require('dotenv');
 
 var app = express();
+dotenv.config();
 
 //Middlewares
 app.use(logger('dev'));
@@ -19,10 +21,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
-
-
 require('./middlewares/routes.mdw')(app);
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -40,24 +39,37 @@ app.use(function (err, req, res, next) {
   // res.render('error');
   res.status(err.status || 500);
   res.json({
-    error: err.message
+    error: err.message,
   });
 });
 
 app.listen(process.env.port || 4000, () => {
   console.log(`Server running at http://localhost:4000`);
-})
-
+});
 
 //Connect to mongodb
+// mongoose
+//   .connect(process.env.DB_CONNECTION, {
+//     useUnifiedTopology: true,
+//     useNewUrlParser: true,
+//     useCreateIndex: true,
+//   })
+//   .catch((err) => console.log(err));
+
 mongoose
-  .connect('mongodb+srv://usermongodb:' + process.env.MONGO_ATLAS_PW + '@ticketmanagement.kto9n.mongodb.net/ticketmanangement?retryWrites=true&w=majority',
-    { useUnifiedTopology: true, useNewUrlParser: true, useCreateIndex: true })
-  .catch(err => console.log(err));
+  .connect(
+    'mongodb+srv://usermongodb:usermongopassword@ticketmanagement.kto9n.mongodb.net/ticketmanangement?retryWrites=true&w=majority',
+    {
+      useUnifiedTopology: true,
+      useNewUrlParser: true,
+      useCreateIndex: true,
+    }
+  )
+  .catch((err) => console.log(err));
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-  console.log('Connect to db successfully')
+  console.log('Connect to db successfully');
 });
 module.exports = app;

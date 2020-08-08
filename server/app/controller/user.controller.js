@@ -71,7 +71,7 @@ module.exports = {
               //Lưu user
               user.save().then(result => {
                 res.status(201).json({
-                  message: 'User created'
+                  message: 'User created',
                 })
               }).catch(err => {
                 console.log(err);

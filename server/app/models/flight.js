@@ -51,7 +51,7 @@ const FlightSchema = new Schema({
     standardfare: [{
         type: Schema.Types.ObjectId,
         ref:'standardfare'
-    }]
+    }],
 });
 
 const Flight = mongoose.model('flight', FlightSchema);
