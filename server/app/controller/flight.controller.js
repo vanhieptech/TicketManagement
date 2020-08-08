@@ -55,7 +55,7 @@ module.exports = {
               finalFlights.push(element);
             }
           });
-         
+
           if (
             req.query.filterPitStop &&
             req.query.filterDeparture_Hour &&
@@ -102,62 +102,59 @@ module.exports = {
           message: "Search successfully",
           results: finalFlights,
         });
-      } 
-    } else {
-      Flight.find()
-        .select(
-          "_id code departure_time arrival_time departure arrival pit_stop aircraft"
-        )
-        .populate({
-          path: "pit_stop arrival departure",
-          select: "_id code name location",
-        })
-        .populate({
-          path: "aircraft",
-          select: "_id code airline seats",
-          populate: {
-            path: "airline seats",
-            select: "_id name logo type seat_number price aircraft",
-          },
-        })
-        .exec()
-        .then((docs) => {
-          if (docs === undefined) {
-            res.status(200).json({
-              code: 200,
-              message: 'Flights list is empty',
-              results: [],
-            });
-          }
-          const response = {
-            flights: docs.map((doc) => {
-              return {
-                _id: doc._id,
-                code: doc.code,
-                departure_time: doc.departure_time,
-                arrival_time: doc.arrival_time,
-                departure: doc.departure,
-                arrival: doc.arrival,
-                pit_stop: doc.pit_stop,
-                aircraft: doc.aircraft,
-              };
-            }),
-          };
-          res
-            .status(200)
-            .json({
-              code: 200,
-              message: "Get all flights successfully",
-              results: response.flights,
-            });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.status(500).json({
-            error: err,
-          });
-        });
+      }
     }
+    Flight.find()
+      .select(
+        "_id code departure_time arrival_time departure arrival pit_stop aircraft"
+      )
+      .populate({
+        path: "pit_stop arrival departure",
+        select: "_id code name location",
+      })
+      .populate({
+        path: "aircraft",
+        select: "_id code airline seats",
+        populate: {
+          path: "airline seats",
+          select: "_id name logo type seat_number price aircraft",
+        },
+      })
+      .exec()
+      .then((docs) => {
+        if (docs === undefined) {
+          res.status(200).json({
+            code: 200,
+            message: "Flights list is empty",
+            results: [],
+          });
+        }
+        const response = {
+          flights: docs.map((doc) => {
+            return {
+              _id: doc._id,
+              code: doc.code,
+              departure_time: doc.departure_time,
+              arrival_time: doc.arrival_time,
+              departure: doc.departure,
+              arrival: doc.arrival,
+              pit_stop: doc.pit_stop,
+              aircraft: doc.aircraft,
+            };
+          }),
+        };
+        res.status(200).json({
+          code: 200,
+          message: "Get all flights successfully",
+          results: response.flights,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json({
+          error: err,
+        });
+      });
   },
   getFlight: (req, res) => {
     const id = req.params.id;
@@ -180,18 +177,19 @@ module.exports = {
       .exec()
       .then((doc) => {
         if (doc) {
-          res.status(200).json(
-            {message: "Flight is found",
+          res.status(200).json({
+            message: "Flight is found",
             results: {
-            _id: doc._id,
-            code: doc.code,
-            departure_time: doc.departure_time,
-            arrival_time: doc.arrival_time,
-            departure: doc.departure,
-            arrival: doc.arrival,
-            pit_stop: doc.pit_stop,
-            aircraft: doc.aircraft,
-          }});
+              _id: doc._id,
+              code: doc.code,
+              departure_time: doc.departure_time,
+              arrival_time: doc.arrival_time,
+              departure: doc.departure,
+              arrival: doc.arrival,
+              pit_stop: doc.pit_stop,
+              aircraft: doc.aircraft,
+            },
+          });
         } else {
           res.status(404).json({
             error: "No valid document found for provided id",
