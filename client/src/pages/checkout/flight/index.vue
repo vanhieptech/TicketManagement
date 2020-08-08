@@ -105,4 +105,9 @@ export default class CheckoutFlight extends Vue {
 .v-stepper__header {
   box-shadow: none !important;
 }
+@media (min-width: 1264px) {
+  .container {
+    max-width: 1160px;
+  }
+}
 </style>
