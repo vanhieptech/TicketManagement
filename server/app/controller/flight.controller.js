@@ -95,7 +95,8 @@ module.exports = {
               error: error,
             });
           }
-          res.code(200).send({
+          res.status(200).send({
+            code: 200,
             message: "Search successfully",
             results: finalFlights,
           });
@@ -129,12 +130,12 @@ module.exports = {
         .then((docs) => {
           if (docs === undefined) {
             res.status(200).json({
-              count: docs.length,
-              flights: [],
+              code: 200,
+              message: 'Flights list is empty',
+              results: [],
             });
           }
           const response = {
-            count: docs.length,
             flights: docs.map((doc) => {
               return {
                 _id: doc._id,
@@ -151,8 +152,9 @@ module.exports = {
           res
             .status(200)
             .json({
+              code: 200,
               message: "Get all flights successfully",
-              results: response,
+              results: response.flights,
             });
         })
         .catch((err) => {
@@ -184,7 +186,9 @@ module.exports = {
       .exec()
       .then((doc) => {
         if (doc) {
-          res.status(200).json({
+          res.status(200).json(
+            {message: "Flight is found",
+            results: {
             _id: doc._id,
             code: doc.code,
             departure_time: doc.departure_time,
@@ -193,7 +197,7 @@ module.exports = {
             arrival: doc.arrival,
             pit_stop: doc.pit_stop,
             aircraft: doc.aircraft,
-          });
+          }});
         } else {
           res.status(404).json({
             error: "No valid document found for provided id",
@@ -227,8 +231,9 @@ module.exports = {
       .save()
       .then((result) => {
         res.status(201).json({
+          code: 201,
           message: "Flight created successfully",
-          createdFlight: {
+          results: {
             _id: result._id,
             code: result.code,
             departure_time: result.departure_time,
@@ -238,10 +243,6 @@ module.exports = {
             pit_stop: result.pit_stop,
             aircraft: result.aircraft,
             seat_available: result.seat_available,
-          },
-          request: {
-            type: "GET",
-            url: "http://localhost:4000/api/flight/" + result._id,
           },
         });
       })
@@ -274,20 +275,7 @@ module.exports = {
       .then((doc) => {
         res.status(200).json({
           message: "Flight deleted successfully",
-          deletedFlight: doc,
-          request: {
-            type: "POST",
-            url: "http://localhost:4000/api/flight",
-            body: {
-              code: "String",
-              departure_time: "Date",
-              arrival_time: "Date",
-              departure: "ObjectId_Airport",
-              arrival: "ObjectId_Airport",
-              pit_stop: "Arrays of ObjectId_Airport",
-              aircraft: "ObjectId_Aircraft",
-            },
-          },
+          results: doc,
         });
       })
       .catch((err) => {
@@ -341,12 +329,9 @@ module.exports = {
       .exec()
       .then((doc) => {
         res.status(200).json({
+          code: 200,
           message: "Flight updated successfully",
-          updatedFlight: doc,
-          request: {
-            type: "GET",
-            url: "http://localhost:4000/api/flight/" + doc._id,
-          },
+          results: doc,
         });
       })
       .catch((err) => {
@@ -370,6 +355,7 @@ module.exports = {
       );
       if (req.query.seat_available > aircraft.seats.length) {
         res.status(404).send({
+          code:  404,
           message: "Not Found",
         });
       }

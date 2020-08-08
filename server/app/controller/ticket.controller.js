@@ -8,8 +8,9 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    tickets: docs
+                    code: 200,
+                    message: 'Get tickets successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
@@ -28,7 +29,10 @@ module.exports = {
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json(doc);
+                    res.status(200).json({
+                        code: 200,
+                        message: 'Get ticket successfully',
+                        results: doc});
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -49,6 +53,7 @@ module.exports = {
         });
         ticket.save().then(result => {
             res.status(201).json({
+                code: 201,
                 message: "Ticket created successfully",
                 createdTicket: {
                     _id: result._id,
@@ -56,10 +61,6 @@ module.exports = {
                     flight: result.flight,
                     seat: result.seat
                 },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:4000/api/ticket/' + result._id,
-                }
             })
         }).catch(err => {
             console.log(err);
@@ -77,17 +78,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Ticket deleted successfully',
-                    deletedTicket: doc,
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:4000/api/ticket',
-                        body: {
-                            state: 'String',
-                            flight: 'ObjectId',
-                            seat: 'ObjectId'
-                        }
-                    }
+                    results: doc,
                 });
             })
             .catch(err => {
@@ -104,12 +97,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Ticket updated successfully',
-                    updatedTicket: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:4000/api/ticket/' + doc._id
-                    }
+                    results: doc,
                 })
             })
             .catch(err => {

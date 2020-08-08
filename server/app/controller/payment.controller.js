@@ -9,8 +9,9 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    payments: docs
+                    code: 200,
+                    message: 'Get payments successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
@@ -29,7 +30,10 @@ module.exports = {
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json(doc);
+                    res.status(200).json({
+                        code: 200,
+                        message: 'Get payment successfully',
+                        results: doc});
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -51,17 +55,14 @@ module.exports = {
         });
         payment.save().then(result => {
             res.status(201).json({
+                code: 201,
                 message: "Payment created successfully",
-                createdPayment: {
+                results: {
                     _id: result._id,
                     card_id: result.card_id,
                     user_name: result.user_name,
                     amount: result.amount
                 },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:4000/api/payment/' + result._id,
-                }
             })
         }).catch(err => {
             console.log(err);
@@ -78,17 +79,9 @@ module.exports = {
             .select('_id card_id user_name amount')
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Payment deleted successfully',
-                    deletedPayment: doc,
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:4000/api/payment',
-                        body: {
-                            card_id: 'String',
-                            user_name: 'String',
-                            amount: 'Number'
-                        }
-                    }
+                    results: doc,
                 });
             })
             .catch(err => {
@@ -105,12 +98,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Payment updated successfully',
-                    updatedPayment: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:4000/api/payment/' + doc._id
-                    }
+                    results: doc,
                 })
             })
             .catch(err => {
