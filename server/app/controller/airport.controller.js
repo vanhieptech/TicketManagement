@@ -8,6 +8,7 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
+                    code: 200,
                     message: 'Get airports successfully',
                     results: docs
                 }
@@ -29,6 +30,7 @@ module.exports = {
             .then(doc => {
                 if (doc) {
                     res.status(200).json({
+                        code: 200,
                         message: 'Get airport successfully',
                         results: doc});
                 } else {
@@ -51,6 +53,7 @@ module.exports = {
         });
         airport.save().then(result => {
             res.status(201).json({
+                code: 201,
                 message: "Airport created successfully",
                 results: {
                     _id: result._id,
@@ -75,6 +78,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Airport deleted successfully',
                     results: doc,
                 });
@@ -98,6 +102,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Airport updated successfully',
                     results: doc
                 })

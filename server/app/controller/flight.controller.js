@@ -96,6 +96,7 @@ module.exports = {
             });
           }
           res.status(200).send({
+            code: 200,
             message: "Search successfully",
             results: finalFlights,
           });
@@ -129,6 +130,7 @@ module.exports = {
         .then((docs) => {
           if (docs === undefined) {
             res.status(200).json({
+              code: 200,
               message: 'Flights list is empty',
               results: [],
             });
@@ -150,6 +152,7 @@ module.exports = {
           res
             .status(200)
             .json({
+              code: 200,
               message: "Get all flights successfully",
               results: response.flights,
             });
@@ -228,6 +231,7 @@ module.exports = {
       .save()
       .then((result) => {
         res.status(201).json({
+          code: 201,
           message: "Flight created successfully",
           results: {
             _id: result._id,
@@ -325,6 +329,7 @@ module.exports = {
       .exec()
       .then((doc) => {
         res.status(200).json({
+          code: 200,
           message: "Flight updated successfully",
           results: doc,
         });
@@ -350,6 +355,7 @@ module.exports = {
       );
       if (req.query.seat_available > aircraft.seats.length) {
         res.status(404).send({
+          code:  404,
           message: "Not Found",
         });
       }

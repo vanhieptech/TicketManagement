@@ -5,6 +5,7 @@ module.exports = {
         try {
             const standardfares = await StandardFare.find().select('_id seat_type price_per_minute airline').populate('airline', '_id name').exec();
             res.status(200).json({
+                code: 200,
                 message: 'Get standardfare successfully',
                 results: standardfares
             });
@@ -20,6 +21,7 @@ module.exports = {
             const standardfare = await StandardFare.findById({ _id: req.params.id }).select('_id seat_type price_per_minute airline').populate('airline', '_id name').exec();
             if (standardfare) {
                 res.status(200).json({
+                    code: 200,
                     message: 'Get standardfare successfully',
                     results: standardfare});
             } else {
@@ -43,6 +45,7 @@ module.exports = {
         try {
             const result = await standardfare.save();
             res.status(201).json({
+                code: 201,
                 message: "StandardFare created successfully",
                 results: {
                     _id: result._id,
@@ -65,6 +68,7 @@ module.exports = {
                 .populate('airline', '_id name')
                 .exec();
             res.status(200).json({
+                code: 200,
                 message: 'StandardFare updated successfully',
                 results: standardfare,
             })
