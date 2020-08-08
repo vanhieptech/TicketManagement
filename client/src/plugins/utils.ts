@@ -1,6 +1,10 @@
-import { Plugin } from '@nuxt/types/app'
 
-const pluginUtils: Plugin = () => {
+import Vue from 'vue'
+import util from './util'
+import * as timeFilters from './time'
+
+export default () => {
+  util.each(timeFilters, function (value, key) {
+    Vue.filter(key, value)
+  })
 }
-
-export default pluginUtils

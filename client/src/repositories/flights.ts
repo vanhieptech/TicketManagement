@@ -16,8 +16,7 @@ export default class FlightRepo {
     return this.instance
   }
 
-  public async getListFlights() {
-    const data = {}
+  public async getListFlights(data) {
     try {
       const res = await this.context.$apiClient.getListFlights(data)
       console.log(res)
