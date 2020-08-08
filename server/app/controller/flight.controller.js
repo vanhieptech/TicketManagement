@@ -38,24 +38,24 @@ module.exports = {
               aFlight.arrival.code == req.query.arrival
             );
           });
-
           let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
           filterdFlightCopy.forEach((element) => {
             let durationMinute =
               (new Date(element.arrival_time) -
                 new Date(element.departure_time)) /
               6000;
-            if (req.query.standardfare == "Phổ Thông") {
+            if (req.query.standardfare == "PT") {
               element.price =
                 durationMinute * element.standardfare[0].price_per_minute;
               finalFlights.push(element);
             }
-            if (req.query.standardfare == "Thương gia") {
+            if (req.query.standardfare == "TG") {
               element.price =
                 durationMinute * element.standardfare[1].price_per_minute;
               finalFlights.push(element);
             }
           });
+         
           if (
             req.query.filterPitStop &&
             req.query.filterDeparture_Hour &&
@@ -90,25 +90,19 @@ module.exports = {
                 ) == 0
               );
             });
-          } else {
-            res.status(500).json({
-              error: error,
-            });
           }
-          res.status(200).send({
-            code: 200,
-            message: "Search successfully",
-            results: finalFlights,
-          });
         } catch (error) {
           console.log(error);
           res.status(500).json({
             error: error,
           });
         }
-      } else {
-        res.end();
-      }
+        res.status(200).send({
+          code: 200,
+          message: "Search successfully",
+          results: finalFlights,
+        });
+      } 
     } else {
       Flight.find()
         .select(
@@ -342,64 +336,64 @@ module.exports = {
       });
   },
 
-  filterFlight: async (req, res, next) => {
-    try {
-      let flights = await Flight.find({
-        departure_time: req.query.departure_time,
-        arrival_time: req.query.arrival_time,
-        departure: new ObjectId(req.query.departure),
-        seat_available: req.query.seat_available,
-      });
-      const aircraft = await Aircraft.findById(
-        new ObjectId(req.query.aircraft)
-      );
-      if (req.query.seat_available > aircraft.seats.length) {
-        res.status(404).send({
-          code:  404,
-          message: "Not Found",
-        });
-      }
-      res.send(flights);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        error: error,
-      });
-    }
-  },
-  sortFlight: async (req, res, next) => {
-    if (req.query.field === "departure_time") {
-      //Sort by departure time
-      if (req.query.sortBy === "desc") {
-        //Sort descendent - Lately
-        try {
-          let flights = await Flight.find({});
-          flights.sort((a, b) => {
-            return new Date(b.departure_time) - new Date(a.departure_time);
-          });
-          res.send(flights);
-        } catch (error) {
-          console.log(error);
-          res.status(500).json({
-            error: error,
-          });
-        }
-      }
-      if (req.query.sortBy === "asc") {
-        //Sort accendent - Early
-        try {
-          let flights = await Flight.find({});
-          flights.sort((a, b) => {
-            return new Date(a.departure_time) - new Date(b.departure_time);
-          });
-          res.send(flights);
-        } catch (error) {
-          console.log(error);
-          res.status(500).json({
-            error: error,
-          });
-        }
-      }
-    }
-  },
+  // filterFlight: async (req, res, next) => {
+  //   try {
+  //     let flights = await Flight.find({
+  //       departure_time: req.query.departure_time,
+  //       arrival_time: req.query.arrival_time,
+  //       departure: new ObjectId(req.query.departure),
+  //       seat_available: req.query.seat_available,
+  //     });
+  //     const aircraft = await Aircraft.findById(
+  //       new ObjectId(req.query.aircraft)
+  //     );
+  //     if (req.query.seat_available > aircraft.seats.length) {
+  //       res.status(404).send({
+  //         code:  404,
+  //         message: "Not Found",
+  //       });
+  //     }
+  //     res.send(flights);
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json({
+  //       error: error,
+  //     });
+  //   }
+  // },
+  // sortFlight: async (req, res, next) => {
+  //   if (req.query.field === "departure_time") {
+  //     //Sort by departure time
+  //     if (req.query.sortBy === "desc") {
+  //       //Sort descendent - Lately
+  //       try {
+  //         let flights = await Flight.find({});
+  //         flights.sort((a, b) => {
+  //           return new Date(b.departure_time) - new Date(a.departure_time);
+  //         });
+  //         res.send(flights);
+  //       } catch (error) {
+  //         console.log(error);
+  //         res.status(500).json({
+  //           error: error,
+  //         });
+  //       }
+  //     }
+  //     if (req.query.sortBy === "asc") {
+  //       //Sort accendent - Early
+  //       try {
+  //         let flights = await Flight.find({});
+  //         flights.sort((a, b) => {
+  //           return new Date(a.departure_time) - new Date(b.departure_time);
+  //         });
+  //         res.send(flights);
+  //       } catch (error) {
+  //         console.log(error);
+  //         res.status(500).json({
+  //           error: error,
+  //         });
+  //       }
+  //     }
+  //   }
+  // },
 };
