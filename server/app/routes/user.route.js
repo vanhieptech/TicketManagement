@@ -20,7 +20,7 @@ router.put('/:id', checkauth.checkCustomer, controller.putUser);
 router.get('/:id/checkoldpassword', controller.checkOldPassword);
 
 //GET /api/user
-router.post('/', checkauth.checkAdmin, controller.postUser);
+router.post('/signUp', controller.signUp);
 
 
 
