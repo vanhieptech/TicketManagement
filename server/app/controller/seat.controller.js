@@ -13,8 +13,8 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    seats: docs
+                    message: 'Get seats successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
@@ -38,7 +38,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json(doc);
+                    res.status(200).json({
+                        message: 'Get seat successfully',
+                        results: doc});
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -61,17 +63,13 @@ module.exports = {
         seat.save().then(result => {
             res.status(201).json({
                 message: "Seat created successfully",
-                createdSeat: {
+                results: {
                     _id: result._id,
                     type: result.type,
                     price: result.price,
                     seat_number: result.seat_number,
                     aircraft: result.aircraft
                 },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:4000/api/seat/' + result._id,
-                }
             })
         }).catch(err => {
             console.log(err);
@@ -95,17 +93,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'Seat deleted successfully',
-                    deletedSeat: doc,
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:4000/api/seat',
-                        body: {
-                            type: 'String',
-                            price: 'Number',
-                            seat_number: 'String',
-                            aircraft: 'ObjectId'
-                        }
-                    }
+                    results: doc,
                 });
             })
             .catch(err => {
@@ -128,11 +116,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'Seat updated successfully',
-                    updatedSeat: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:4000/api/seat/' + doc._id
-                    }
+                    results: doc,
                 })
             })
             .catch(err => {

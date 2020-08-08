@@ -9,8 +9,8 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    aircraft: docs
+                    message: 'Get FAQs successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
@@ -29,7 +29,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json(doc);
+                    res.status(200).json({
+                        message: 'Get FAQ successfully',
+                        results: doc});
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -51,15 +53,11 @@ module.exports = {
         faq.save().then(result => {
             res.status(201).json({
                 message: "FAQ created successfully",
-                createdFAQ: {
+                results: {
                     _id: result._id,
                     question: result.question,
                     answer: result.answer
                 },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:4000/api/faq/' + result._id,
-                }
             })
         }).catch(err => {
             console.log(err);
@@ -77,15 +75,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'FAQ deleted successfully',
-                    deletedFAQ: doc,
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:4000/api/faq',
-                        body: {
-                            question: 'String',
-                            answer: 'String'
-                        }
-                    }
+                    results: doc,
                 });
             })
             .catch(err => {
@@ -103,11 +93,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'FAQ updated successfully',
-                    updatedFAQ: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:4000/api/faq/' + doc._id
-                    }
+                    results: doc
                 })
             })
             .catch(err => {
