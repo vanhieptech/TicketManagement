@@ -11,8 +11,8 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    aircraft: docs
+                    message: 'Get feedbacks successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
@@ -32,7 +32,9 @@ module.exports = {
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json(doc);
+                    res.status(200).json({
+                        message: 'Get feedback successfully',
+                        results: doc});
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -55,16 +57,12 @@ module.exports = {
         feedback.save().then(result => {
             res.status(201).json({
                 message: "Feedback created successfully",
-                createdFeedback: {
+                results: {
                     _id: result._id,
                     comment: result.comment,
                     user: result.user,
                     airline: result.airline
                 },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:4000/api/feedback/' + result._id,
-                }
             })
         }).catch(err => {
             console.log(err);
@@ -83,16 +81,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'Feedback deleted successfully',
-                    deletedFeedback: doc,
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:4000/api/feedback',
-                        body: {
-                            comment: 'String',
-                            user: 'ObjectId',
-                            airline: 'ObjectId'
-                        }
-                    }
+                    results: doc
                 });
             })
             .catch(err => {
@@ -111,11 +100,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'Feedback updated successfully',
-                    updatedFeedback: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:4000/api/feedback/' + doc._id
-                    }
+                    results: doc,
                 })
             })
             .catch(err => {

@@ -9,8 +9,8 @@ module.exports = {
       .exec()
       .then(docs => {
         const response = {
-          count: docs.length,
-          orders: docs
+          message: 'Get orders successfully',
+          results: docs
         }
         res.status(200).json(response);
       })
@@ -29,7 +29,9 @@ module.exports = {
       .exec()
       .then(doc => {
         if (doc) {
-          res.status(200).json(doc);
+          res.status(200).json({
+            message: 'Get order successfully',
+            results:doc});
         } else {
           res.status(404).json({
             error: "No valid document found for provided id"
@@ -54,7 +56,7 @@ module.exports = {
     order.save().then(result => {
       res.status(201).json({
         message: "Order created successfully",
-        createdOrder: {
+        results: {
           _id: result._id,
           code: result.code,
           status: result.status,
@@ -62,10 +64,6 @@ module.exports = {
           user: result.user,
           passengers: result.passengers
         },
-        request: {
-          type: 'GET',
-          url: 'http://localhost:4000/api/order/' + result._id,
-        }
       })
     }).catch(err => {
       console.log(err);
@@ -83,15 +81,7 @@ module.exports = {
       .then(doc => {
         res.status(200).json({
           message: 'Order deleted successfully',
-          deletedOrder: doc,
-          request: {
-            type: 'POST',
-            url: 'http://localhost:4000/api/order',
-            body: {
-              permission: 'String',
-              user: 'ObjectId'
-            }
-          }
+          results: doc,
         });
       })
       .catch(err => {
@@ -109,11 +99,7 @@ module.exports = {
       .then(doc => {
         res.status(200).json({
           message: 'Order updated successfully',
-          updatedOrder: doc,
-          request: {
-            type: 'GET',
-            url: 'http://localhost:4000/api/order/' + doc._id
-          }
+          results: doc,
         })
       })
       .catch(err => {

@@ -52,16 +52,12 @@ module.exports = {
         payment.save().then(result => {
             res.status(201).json({
                 message: "Payment created successfully",
-                createdPayment: {
+                results: {
                     _id: result._id,
                     card_id: result.card_id,
                     user_name: result.user_name,
                     amount: result.amount
                 },
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:4000/api/payment/' + result._id,
-                }
             })
         }).catch(err => {
             console.log(err);
@@ -79,16 +75,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'Payment deleted successfully',
-                    deletedPayment: doc,
-                    request: {
-                        type: 'POST',
-                        url: 'http://localhost:4000/api/payment',
-                        body: {
-                            card_id: 'String',
-                            user_name: 'String',
-                            amount: 'Number'
-                        }
-                    }
+                    results: doc,
                 });
             })
             .catch(err => {
@@ -106,11 +93,7 @@ module.exports = {
             .then(doc => {
                 res.status(200).json({
                     message: 'Payment updated successfully',
-                    updatedPayment: doc,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:4000/api/payment/' + doc._id
-                    }
+                    results: doc,
                 })
             })
             .catch(err => {

@@ -8,8 +8,8 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    tickets: docs
+                    message: 'Get tickets successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
