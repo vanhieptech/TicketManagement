@@ -22,15 +22,16 @@ const UserSchema = new Schema({
         match: [/[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/, 'Email address invalid']
     },
     dob: {
-        type: Date,
+        type: String,
         required: [true, 'Birth day is required'],
+        minlength: [10, 'DOB must have at least 10 character']
         // Nhỏ nhất phải 18 tuổi
-        max: function () {
-            var eightyYearsAgo = new Date();
-            eightyYearsAgo.setFullYear(eightyYearsAgo.getFullYear() - 18);
-            console.log(eightyYearsAgo);
-            return eightyYearsAgo;
-        }
+        // max: function () {
+        //     var eightyYearsAgo = new Date();
+        //     eightyYearsAgo.setFullYear(eightyYearsAgo.getFullYear() - 18);
+        //     console.log(eightyYearsAgo);
+        //     return eightyYearsAgo;
+        // }
     },
     gender: {
         type: String,

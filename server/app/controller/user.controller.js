@@ -72,7 +72,7 @@ module.exports = {
                 email: req.body.email,
                 password: hash,
                 phone: req.body.phone,
-                dob: moment.utc(req.body.dob, 'DD-MM-YYYY HH:mm:ss'),
+                dob: req.body.dob,
                 gender: req.body.gender,
                 permission: 'ROLE_USER',
                 createdDate: createddate,
