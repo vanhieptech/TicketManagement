@@ -13,6 +13,7 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
+                    code: 200,
                     message: 'Get seats successfully',
                     results: docs
                 }
@@ -39,6 +40,7 @@ module.exports = {
             .then(doc => {
                 if (doc) {
                     res.status(200).json({
+                        code: 200,
                         message: 'Get seat successfully',
                         results: doc});
                 } else {
@@ -62,6 +64,7 @@ module.exports = {
         });
         seat.save().then(result => {
             res.status(201).json({
+                code: 200,
                 message: "Seat created successfully",
                 results: {
                     _id: result._id,
@@ -92,6 +95,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Seat deleted successfully',
                     results: doc,
                 });
@@ -115,6 +119,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Seat updated successfully',
                     results: doc,
                 })

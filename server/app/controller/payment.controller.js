@@ -9,8 +9,9 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
-                    count: docs.length,
-                    payments: docs
+                    code: 200,
+                    message: 'Get payments successfully',
+                    results: docs
                 }
                 res.status(200).json(response);
             })
@@ -29,7 +30,10 @@ module.exports = {
             .exec()
             .then(doc => {
                 if (doc) {
-                    res.status(200).json(doc);
+                    res.status(200).json({
+                        code: 200,
+                        message: 'Get payment successfully',
+                        results: doc});
                 } else {
                     res.status(404).json({
                         error: "No valid document found for provided id"
@@ -51,6 +55,7 @@ module.exports = {
         });
         payment.save().then(result => {
             res.status(201).json({
+                code: 201,
                 message: "Payment created successfully",
                 results: {
                     _id: result._id,
@@ -74,6 +79,7 @@ module.exports = {
             .select('_id card_id user_name amount')
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Payment deleted successfully',
                     results: doc,
                 });
@@ -92,6 +98,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Payment updated successfully',
                     results: doc,
                 })

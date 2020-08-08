@@ -11,6 +11,7 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
+                    code: 200,
                     message: 'Get feedbacks successfully',
                     results: docs
                 }
@@ -33,6 +34,7 @@ module.exports = {
             .then(doc => {
                 if (doc) {
                     res.status(200).json({
+                        code: 200,
                         message: 'Get feedback successfully',
                         results: doc});
                 } else {
@@ -56,6 +58,7 @@ module.exports = {
         });
         feedback.save().then(result => {
             res.status(201).json({
+                code: 201,
                 message: "Feedback created successfully",
                 results: {
                     _id: result._id,
@@ -80,6 +83,7 @@ module.exports = {
             .populate('user airline', '_id name phone email dob gender password logo')
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Feedback deleted successfully',
                     results: doc
                 });
@@ -99,6 +103,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Feedback updated successfully',
                     results: doc,
                 })

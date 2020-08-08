@@ -9,6 +9,7 @@ module.exports = {
       .exec()
       .then(docs => {
         const response = {
+          code: 200,
           message: 'Get orders successfully',
           results: docs
         }
@@ -30,6 +31,7 @@ module.exports = {
       .then(doc => {
         if (doc) {
           res.status(200).json({
+            code: 200,
             message: 'Get order successfully',
             results:doc});
         } else {
@@ -55,6 +57,7 @@ module.exports = {
     });
     order.save().then(result => {
       res.status(201).json({
+        code: 201,
         message: "Order created successfully",
         results: {
           _id: result._id,
@@ -80,6 +83,7 @@ module.exports = {
       .select('_id code status flight user tickets passengers payment')
       .then(doc => {
         res.status(200).json({
+          code: 200,
           message: 'Order deleted successfully',
           results: doc,
         });
@@ -98,6 +102,7 @@ module.exports = {
       .exec()
       .then(doc => {
         res.status(200).json({
+          code: 200,
           message: 'Order updated successfully',
           results: doc,
         })

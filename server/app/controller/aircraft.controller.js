@@ -13,6 +13,7 @@ module.exports = {
             .exec()
             .then(docs => {
                 const response = {
+                    code: 200,
                     message: "Get aircraft successfully",
                     results: docs
                 }
@@ -35,6 +36,7 @@ module.exports = {
             .then(doc => {
                 if (doc) {
                     res.status(200).json({
+                        code: 200,
                         message: "Get aircraft successfully",
                         results: doc});
                 } else {
@@ -105,6 +107,7 @@ module.exports = {
                 // return result.save();
                 //Success
                 res.status(201).json({
+                    code: 201,
                     message: "Aircraft created successfully",
                     results: {
                         _id: result._id,
@@ -130,6 +133,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Aircraft deleted successfully',
                     results: doc,
                 });
@@ -149,6 +153,7 @@ module.exports = {
             .exec()
             .then(doc => {
                 res.status(200).json({
+                    code: 200,
                     message: 'Aircraft updated successfully',
                     results: doc,
                 })
