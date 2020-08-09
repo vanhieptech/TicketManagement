@@ -29,7 +29,7 @@ const config: NuxtConfig = {
   },
   head: HeadConfig,
   loading: false, // using 'false' if you dont want using default loading
-  css: [],
+  css: ['~/static/styles.css'],
   styleResources: {
     scss: [],
   },
