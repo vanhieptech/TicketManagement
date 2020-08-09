@@ -63,22 +63,25 @@ module.exports = {
             req.query.filterStandardFare
           ) {
             //Pit stop filter
-            if (req.query.filterPitStop > 1) {
-              filterdFlightCopy = filterdFlightCopy.filter((element) => {
+            if (parseInt(req.query.filterPitStop) > 0) {
+              finalFlights = finalFlights.filter((element) => {
                 return element.pit_stop.length > 0;
               });
             } else {
               //Do nothing
+              finalFlights = finalFlights.filter((element) => {
+                return element.pit_stop.length == 0;
+              });
             }
-            if (req.query.filterDeparture_Hour == "Sáng") {
-              filterdFlightCopy = filterdFlightCopy.filter((element) => {
+            if (req.query.filterDeparture_Hour == "sang") {
+              finalFlights = finalFlights.filter((element) => {
                 return (
                   new Date(element.departure_time).getHours() > 0 &&
                   new Date(element.departure_time).getHours() < 12
                 );
               });
             } else {
-              filterdFlightCopy = filterdFlightCopy.filter((element) => {
+              finalFlights = finalFlights.filter((element) => {
                 return new Date(element.departure_time).getHours() > 12;
               });
             }
@@ -91,19 +94,54 @@ module.exports = {
               );
             });
           }
+          //Do sort by departure time
+          if (req.query.sortDepartureTime === "departure_time") {
+            //Sort by departure time
+            if (req.query.sortByTime === "desc") {
+              //Sort descendent - Lately
+              finalFlights.sort((a, b) => {
+                return new Date(b.departure_time) - new Date(a.departure_time);
+              });
+            }
+
+            if (req.query.sortBy === "asc") {
+              //Sort accendent - Early
+              finalFlights.sort((a, b) => {
+                return new Date(a.departure_time) - new Date(b.departure_time);
+              });
+            }
+          }
+
+          if (req.query.sortPrice === "price") {
+            //Sort by departure time
+            if (req.query.sortByPrice === "desc") {
+              //Sort descendent - Lately
+              finalFlights.sort((a, b) => {
+                return b.price - a.price;
+              });
+            }
+            if (req.query.sortByPrice === "asc") {
+              //Sort accendent - Early
+              finalFlights.sort((a, b) => {
+                return a.price - b.price;
+              });
+            }
+          }
         } catch (error) {
           console.log(error);
           res.status(500).json({
             error: error,
           });
         }
-        res.status(200).send({
+
+        return res.status(200).send({
           code: 200,
           message: "Search successfully",
           results: finalFlights,
         });
       }
     }
+
     Flight.find()
       .select(
         "_id code departure_time arrival_time departure arrival pit_stop aircraft"
@@ -334,64 +372,4 @@ module.exports = {
       });
   },
 
-  // filterFlight: async (req, res, next) => {
-  //   try {
-  //     let flights = await Flight.find({
-  //       departure_time: req.query.departure_time,
-  //       arrival_time: req.query.arrival_time,
-  //       departure: new ObjectId(req.query.departure),
-  //       seat_available: req.query.seat_available,
-  //     });
-  //     const aircraft = await Aircraft.findById(
-  //       new ObjectId(req.query.aircraft)
-  //     );
-  //     if (req.query.seat_available > aircraft.seats.length) {
-  //       res.status(404).send({
-  //         code:  404,
-  //         message: "Not Found",
-  //       });
-  //     }
-  //     res.send(flights);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({
-  //       error: error,
-  //     });
-  //   }
-  // },
-  // sortFlight: async (req, res, next) => {
-  //   if (req.query.field === "departure_time") {
-  //     //Sort by departure time
-  //     if (req.query.sortBy === "desc") {
-  //       //Sort descendent - Lately
-  //       try {
-  //         let flights = await Flight.find({});
-  //         flights.sort((a, b) => {
-  //           return new Date(b.departure_time) - new Date(a.departure_time);
-  //         });
-  //         res.send(flights);
-  //       } catch (error) {
-  //         console.log(error);
-  //         res.status(500).json({
-  //           error: error,
-  //         });
-  //       }
-  //     }
-  //     if (req.query.sortBy === "asc") {
-  //       //Sort accendent - Early
-  //       try {
-  //         let flights = await Flight.find({});
-  //         flights.sort((a, b) => {
-  //           return new Date(a.departure_time) - new Date(b.departure_time);
-  //         });
-  //         res.send(flights);
-  //       } catch (error) {
-  //         console.log(error);
-  //         res.status(500).json({
-  //           error: error,
-  //         });
-  //       }
-  //     }
-  //   }
-  // },
 };
