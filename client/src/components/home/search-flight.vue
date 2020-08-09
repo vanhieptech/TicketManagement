@@ -12,7 +12,7 @@
         <v-container>
           <v-row dense>
             <v-col cols="12">
-              <v-card class="rounded-xl mt-n15" min-height="165">
+              <v-card class="rounded-lg mt-n15" min-height="165">
                 <v-card-title>
                   <v-radio-group v-model="radios" class="mt-0" :mandatory="false" row hide-details>
                     <v-radio label="One way" value="radio-1"></v-radio>
@@ -93,7 +93,6 @@
                     </v-col>
                     <v-col cols="12" sm="6" md="2">
                       <!--
-
                         <v-combobox
                           v-model="select"
                           :items="items"
@@ -238,7 +237,7 @@
       </v-col>
       <v-col cols="12" class="d-flex justify-center pa-0">
         <v-btn
-          class="white--text mt-n10 text-body-2 font-weight-bold"
+          class="white--text mt-n10 text-body-2 text-uppercase font-weight-bold"
           color="primary"
           min-width="200"
           min-height="50"
