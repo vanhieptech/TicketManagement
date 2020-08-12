@@ -242,8 +242,7 @@ module.exports = {
       });
   },
   postFlight: async (req, res) => {
-    const air = await Aircraft.findById(new ObjectId(req.body.aircraft));
-    let numSeat = air.seats.length;
+    let numSeat = 30;
     const flight = new Flight({
       code: req.body.code,
       departure_time: moment.utc(
