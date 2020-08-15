@@ -22,17 +22,17 @@
             </v-col>
             <v-col cols="12" sm="12">
               <v-text-field
-                v-model="email"
-                :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                v-model="password"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :rules="[rules.required, rules.min]"
-                :type="show2 ? 'text' : 'password'"
+                :type="showPassword ? 'text' : 'password'"
                 name="input-10-2"
                 label="Password"
                 hint="At least 8 characters"
                 class="input-group--focused"
                 outlined
                 dense
-                @click:append="show2 = !show2"
+                @click:append="showPassword = !showPassword"
               ></v-text-field>
             </v-col>
             <v-col cols="12" class="py-0 d-flex flex-row align-center justify-space-between">
@@ -42,19 +42,19 @@
             </v-col>
             <v-col cols="12" md="8" class="d-flex flex-row align-center">
               <p class="caption mb-0">Do not have an account?</p>&nbsp;
-              <nuxt-link to="/auth/login">Register now!</nuxt-link>
+              <nuxt-link to="/auth/signup">Register now!</nuxt-link>
             </v-col>
             <v-col cols="12" md="4">
               <v-btn
                 :disabled="!valid"
                 color="primary"
                 x-large
-                class="mr-4"
+                class="mr-4 text-uppercase"
                 min-width="200"
                 elevation="0"
                 block
                 @click="validate"
-              >Register</v-btn>
+              >login</v-btn>
             </v-col>
           </v-row>
         </v-card-text>
@@ -81,44 +81,57 @@
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-@Component({
-  data: () => ({
-    valid: true,
-    name: "",
-    nameRules: [
-      (v) => !!v || "Name is required",
-      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-    ],
-    email: "",
-    emailRules: [
-      (v) => !!v || "E-mail is required",
-      (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-    ],
-    select: null,
-    items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-    show2: true,
-    rules: {
-      required: (value) => !!value || "Required.",
-      min: (v) => v.length >= 8 || "Min 8 characters",
-      emailMatch: () => "The email and password you entered don't match",
-    },
-  }),
+@Component({})
+export default class Login extends Vue {
+  [x: string]: any;
+  valid: Boolean = true;
 
-  methods: {
-    validate() {
-      (this.$refs.form as Vue & { validate: () => boolean }).validate();
-    },
-    reset() {
-      (this.$refs.form as Vue & { reset: () => boolean }).reset();
-    },
-    resetValidation() {
-      (this.$refs.form as Vue & {
-        resetValidation: () => boolean;
-      }).resetValidation();
-    },
-  },
-})
-export default class Login extends Vue {}
+  emailRules: any = [
+    (v) => !!v || "E-mail is required",
+    (v) =>
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(
+        v
+      ) || "E-mail must be valid",
+  ];
+
+  rules: any = {
+    required: (value) => !!value || "Required.",
+    min: (v) => v.length >= 8 || "Min 8 characters",
+  };
+
+  userModel: any = {
+    email: "",
+    password: "",
+  };
+
+  email: String = "";
+  password: String = "";
+  showPassword: Boolean = false;
+
+  mounted() {}
+
+  validate() {
+    const isValid = (this.$refs.form as Vue & {
+      validate: () => boolean;
+    }).validate();
+    if (!isValid) return;
+    this.userModel.email = this.email;
+    this.userModel.password = this.password;
+    // Todo call api login
+
+    console.log(`data`, this.userModel);
+
+    this.$apiClient
+      .login(this.userModel)
+      .then((res: any) => {
+        console.log(res);
+        if (res && res.code === 200) {
+          this.$cookies.set("token", res.token);
+        }
+      })
+      .catch((e) => console.error(e));
+  }
+}
 </script>
 
 <style scoped>

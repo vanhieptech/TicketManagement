@@ -11,21 +11,12 @@ const config: NuxtConfig = {
   env: {
     NODE_ENV: process.env.NODE_ENV || 'development'
   },
-  // privateRuntimeConfig: {
-  //   "port": env.PORT,
-  //   "host": env.HOST,
-  //   "app": AppConfig
-  // },
+  privateRuntimeConfig: {
+    "port": env.PORT,
+  },
   publicRuntimeConfig: {
-    // "cdnHost": env.CDN_HOST,
-    // "accountBaseUrl": env.ACCOUNT_BASE_URL,
-    // "apiGatewayEndpoint": env.API_GATEWAY_ENDPOINT,
+    "accountBaseUrl": env.ACCOUNT_BASE_URL,
     "endpoint": env.API_ENDPOINT,
-    // "socketEndpoint": env.SOCKET_ENDPOINT,
-    // "jwt": {
-    //   "appId": env.APP_ID,
-    //   "appSecret": env.APP_SECRET
-    // }
   },
   head: HeadConfig,
   loading: false, // using 'false' if you dont want using default loading
@@ -35,13 +26,20 @@ const config: NuxtConfig = {
   },
   plugins: [
     '~/plugins/services.ts',
-    '~/plugins/utils.ts'
+    '~/plugins/utils.ts',
   ],
   modules: [
     ['@nuxtjs/robots', { UserAgent: '*', Disallow: '*' }],
     'cookie-universal-nuxt',
     '@nuxtjs/style-resources',
     '@nuxtjs/axios',
+    [
+      'vue-sweetalert2/nuxt',
+      {
+        confirmButtonColor: '#41b882',
+        cancelButtonColor: '#ff7674'
+      }
+    ]
   ],
   buildModules: [
     [

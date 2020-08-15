@@ -1,6 +1,6 @@
 // import jwt from 'jsonwebtoken'
 import axios, { AxiosResponse, AxiosError, Method } from 'axios'
-// import base64url from 'base64url'
+import base64url from 'base64url'
 import serialize from '../utils/serialize';
 import { NuxtAppOptions } from '@nuxt/types';
 import { IResp } from '../models/api';
@@ -31,7 +31,7 @@ const api = function (app: NuxtAppOptions, $config: NuxtRuntimeConfig, { apiEndP
     fullUrl += (queryString.split('?')[1] ? '&' : '?') + queryString
   }
   // get token
-  // const token = app.$cookies.get('token') ? app.$cookies.get('token') : data ? data.token : null;
+  const token = app.$cookies.get('token') ? app.$cookies.get('token') : data ? data.token : null;
   // get user
   // const user = app.$user.get('_id')
   // get signature
@@ -49,13 +49,13 @@ const api = function (app: NuxtAppOptions, $config: NuxtRuntimeConfig, { apiEndP
   //     algorithm: 'HS256'
   //   }
   // )
-  // let defaultHeader = {
-  //   token: token || null,
-  //   signature
-  // }
-  let defaultHeader = {}
+  let defaultHeader = {
+    token: token || null,
+    // signature
+  }
+
   if (headers) defaultHeader = Object.assign(defaultHeader, headers)
-  // if (!defaultHeader.token) delete defaultHeader.token
+  if (!defaultHeader.token) delete defaultHeader.token
 
   if (cb) {
     axios(fullUrl, {
@@ -85,11 +85,11 @@ const api = function (app: NuxtAppOptions, $config: NuxtRuntimeConfig, { apiEndP
               if (currentUrl.searchParams.get('query')) {
                 currentUrl.searchParams.delete('query')
               }
-              // const redirectUrl = base64url(currentUrl.href)
-              // const url = new URL('/', $config.env.accountBaseUrl)
-              // url.searchParams.set('redirect', redirectUrl)
-              // url.searchParams.set('token', token)
-              // window.location.href = url.toString()
+              const redirectUrl = base64url(currentUrl.href)
+              const url = new URL('/', $config.env.accountBaseUrl)
+              url.searchParams.set('redirect', redirectUrl)
+              url.searchParams.set('token', token)
+              window.location.href = url.toString()
             }
           } else {
             console.error(`[ERROR] ${error.response.status} ${error.response.statusText}`);
@@ -135,11 +135,11 @@ const api = function (app: NuxtAppOptions, $config: NuxtRuntimeConfig, { apiEndP
                 if (currentUrl.searchParams.get('query')) {
                   currentUrl.searchParams.delete('query')
                 }
-                // const redirectUrl = base64url(currentUrl.href)
-                // const url = new URL('/', $config.accountBaseUrl)
-                // url.searchParams.set('redirect', redirectUrl)
-                // url.searchParams.set('token', token)
-                // url.searchParams.set('requestUser', encodeURIComponent(JSON.stringify(app.$user.get())))
+                const redirectUrl = base64url(currentUrl.href)
+                const url = new URL('/', $config.accountBaseUrl)
+                url.searchParams.set('redirect', redirectUrl)
+                url.searchParams.set('token', token)
+                url.searchParams.set('requestUser', encodeURIComponent(JSON.stringify(app.$user.get())))
                 window.location.href = url.toString()
               }
             } else {
