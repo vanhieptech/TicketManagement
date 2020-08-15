@@ -23,7 +23,6 @@ module.exports = {
             } catch (e) {
                 console.log(e);
             }
-
             if (
                 req.query.departure &&
                 req.query.arrival &&

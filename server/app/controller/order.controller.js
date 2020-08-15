@@ -50,6 +50,7 @@ module.exports = {
     const order = new Order({
       _id: new mongoose.Types.ObjectId(),
       code: req.body.code,
+      total: req.body.total,
       status: req.body.status,
       flight: req.body.flight,
       user: req.body.user,
