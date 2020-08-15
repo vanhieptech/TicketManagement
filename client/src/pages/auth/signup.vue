@@ -10,7 +10,7 @@
           <v-row>
             <v-col cols="12" md="6">
               <v-text-field
-                v-model="name"
+                v-model="lastName"
                 :rules="nameRules"
                 label="Last name"
                 outlined
@@ -20,7 +20,7 @@
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
-                v-model="name"
+                v-model="firstName"
                 :rules="nameRules"
                 label="Last name"
                 outlined
@@ -40,32 +40,32 @@
             </v-col>
             <v-col cols="12" sm="6">
               <v-text-field
-                v-model="email"
-                :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+                v-model="password"
+                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 :rules="[rules.required, rules.min]"
-                :type="show2 ? 'text' : 'password'"
+                :type="showPassword ? 'text' : 'password'"
                 name="input-10-2"
                 label="Password"
                 hint="At least 8 characters"
                 class="input-group--focused"
                 outlined
                 dense
-                @click:append="show2 = !show2"
+                @click:append="showPassword = !showPassword"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="6">
               <v-text-field
-                v-model="email"
-                :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
-                :rules="[rules.required, rules.min]"
-                :type="show2 ? 'text' : 'password'"
+                v-model="confirmPassword"
+                :append-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                :rules="[rules.required, rules.min, rules.emailMatch(confirmPassword, password)]"
+                :type="showConfirmPassword ? 'text' : 'password'"
                 name="input-10-2"
                 label="Confirm password"
                 hint="At least 8 characters"
                 class="input-group--focused"
                 outlined
                 dense
-                @click:append="show2 = !show2"
+                @click:append="showConfirmPassword = !showConfirmPassword"
               ></v-text-field>
             </v-col>
             <v-col cols="12" md="8" class="d-flex flex-row align-center">
@@ -110,43 +110,80 @@
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
 @Component({
-  data: () => ({
-    valid: true,
-    name: "",
-    nameRules: [
-      (v) => !!v || "Name is required",
-      (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
-    ],
-    email: "",
-    emailRules: [
-      (v) => !!v || "E-mail is required",
-      (v) => /.+@.+\..+/.test(v) || "E-mail must be valid",
-    ],
-    select: null,
-    items: ["Item 1", "Item 2", "Item 3", "Item 4"],
-    show2: true,
-    rules: {
-      required: (value) => !!value || "Required.",
-      min: (v) => v.length >= 8 || "Min 8 characters",
-      emailMatch: () => "The email and password you entered don't match",
-    },
-  }),
+  data: () => ({}),
 
-  methods: {
-    validate() {
-      (this.$refs.form as Vue & { validate: () => boolean }).validate();
-    },
-    reset() {
-      (this.$refs.form as Vue & { reset: () => boolean }).reset();
-    },
-    resetValidation() {
-      (this.$refs.form as Vue & {
-        resetValidation: () => boolean;
-      }).resetValidation();
-    },
-  },
+  methods: {},
 })
-export default class SignUp extends Vue {}
+export default class SignUp extends Vue {
+  [x: string]: any;
+  valid: Boolean = true;
+
+  nameRules: any = [
+    (v) => !!v || "Name is required",
+    (v) => (v && v.length <= 10) || "Name must be less than 10 characters",
+  ];
+
+  emailRules: any = [
+    (v) => !!v || "E-mail is required",
+    (v) =>
+      /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/.test(
+        v
+      ) || "E-mail must be valid",
+  ];
+
+  rules: any = {
+    required: (value) => !!value || "Required.",
+    min: (v) => v.length >= 8 || "Min 8 characters",
+    emailMatch: (v, password) =>
+      v === password || "The email and password you entered don't match",
+  };
+
+  userModel: any = {
+    name: "",
+    email: "",
+    password: "",
+    phone: "",
+    dob: "",
+    gender: "",
+    permission: "ROLE_USER",
+  };
+  lastName: String = "";
+  firstName: String = "";
+  email: String = "";
+  password: String = "";
+  confirmPassword: String = "";
+  showPassword: Boolean = false;
+  showConfirmPassword: Boolean = false;
+
+  mounted() {}
+
+  validate() {
+    const isValid = (this.$refs.form as Vue & {
+      validate: () => boolean;
+    }).validate();
+    if (!isValid) return;
+    this.userModel.name = `${this.firstName} ${this.lastName}`;
+    this.userModel.email = this.email;
+    this.userModel.password = this.password;
+
+    // TODO: call api sign up
+    console.log(`data`, this.userModel);
+    this.$apiClient
+      .signUp(this.userModel)
+      .then((res) => {
+        console.log(res);
+        if (res && res.code === 200) {
+          this.$swal(
+            "Great!",
+            "You have been successfully registered!",
+            "success"
+          );
+          this.$router.push("/auth/login");
+        }
+      })
+      .catch((e) => console.error(e));
+  }
+}
 </script>
 
 <style scoped>

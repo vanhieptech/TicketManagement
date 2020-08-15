@@ -25,16 +25,8 @@ export default class AuthenUserRepo {
         name: user.name,
         dob: user.dob,
         phone: user.phone,
-        avatar: user.avatar,
-        isAdmin: user.isAdmin,
-        isProvider: user.isProvider,
-        isTest: user.isTest,
         token: user.token,
-        username: user.username,
-        provider: user.provider,
-        validated: user.validated
       }
-      if (newUserInfo.avatar) newUserInfo.avatar.url = this.context.$image.optimize(newUserInfo.avatar)
       this.context.$cookies.set('user', newUserInfo, {
         maxAge: 7 * 24 * 60 * 60,
         path: '/'
