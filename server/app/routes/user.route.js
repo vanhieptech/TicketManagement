@@ -8,8 +8,11 @@ const checkauth = require("../middlewares/check-auth.mdw");
 router.get("/", checkauth.checkAdmin, controller.getUsers);
 // router.get("/", controller.getUsers);
 
-//GET /api/user
+//POST /api/user
 router.post("/login", controller.login);
+
+//POST /api/user
+router.get("/auth", controller.getUserByToken);
 
 //GET /api/user/:id
 router.get("/:id", checkauth.checkAdmin, controller.getUser);
