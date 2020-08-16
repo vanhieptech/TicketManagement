@@ -8,7 +8,11 @@
         { "name": "title", "content": "video conferencing" },
         { "name": "description", "content": "video conferencing" },
         { "name": "viewport", "content": "width=device-width, initial-scale=1.0" },
-        { "name": "robots", "content": "noindex,noarchive,nofollow" }
+        { "name": "robots", "content": "noindex,noarchive,nofollow" },
+        {
+            "name": "google-signin-client_id",
+            "content": "440116093203-rrj9fbav2k4ig4ee5mgrmrkvj4i7dc4g.apps.googleusercontent.com"
+        }
     ],
     "link": [{
             "rel": "icon",
@@ -27,5 +31,10 @@
             "href": "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css",
             "rel": "stylesheet"
         }
-    ]
+    ],
+    "script": [{
+        "src": "https://apis.google.com/js/platform.js",
+        "async": true,
+        "defer": true
+    }]
 }

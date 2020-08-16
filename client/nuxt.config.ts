@@ -135,21 +135,32 @@ const config: NuxtConfig = {
             method: 'get',
             propertyName: 'user'
           },
-          // tokenRequired: true,
           logout: false,
-          tokenType: ''
-        }
+        },
+        tokenRequired: true,
+        // tokenType: 'Bearer'
+      },
+      facebook: {
+        client_id: 'your facebook app id',
+        userinfo_endpoint: 'https://graph.facebook.com/v2.12/me?fields=about,name,picture{url},email',
+        scope: ['public_profile', 'email']
+      },
+      google: {
+        client_id: '440116093203-rrj9fbav2k4ig4ee5mgrmrkvj4i7dc4g.apps.googleusercontent.com'
       },
     },
-    // watchLoggedIn: false,
     // redirect: {
-    //   // login: '/auth/login',
-    //   // login: '/auth/login',
+    //   login: '/auth/login',
     //   // logout: '/',
-    //   // callback: '/',
-    //   login: false,
-    //   home: '/'
+    //   // callback: '/auth/login',
+    //   // home: '/'
     // }
+    redirect: {
+      login: false,
+      home: false,
+      callback: false,
+      logout: false
+    }
   },
 }
 

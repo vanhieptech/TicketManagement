@@ -68,7 +68,7 @@
               <v-btn x-large rounded elevation="0" color="#4267B2" class="white--text">
                 <v-icon left>mdi-facebook</v-icon>Sign up with Facebook
               </v-btn>
-              <v-btn x-large rounded outlined color="#FF6D00">
+              <v-btn x-large rounded outlined color="#FF6D00" @click="$auth.loginWith('google')">
                 <v-icon left>mdi-google</v-icon>Sign up with Google
               </v-btn>
             </v-col>
@@ -123,6 +123,7 @@ export default class Login extends Vue {
     this.$auth.loginWith("local", {
       data: this.userModel,
     });
+    this.$router.push("/");
     // this.$apiClient
     //   .login(this.userModel)
     //   .then((res: any) => {

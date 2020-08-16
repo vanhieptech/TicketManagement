@@ -289,7 +289,7 @@ export default class SearchFlight extends Vue {
     departure: "",
     departureTime: "",
     arrival: "",
-    standardfare: "PT",
+    standardfare: "TG",
   };
   async mounted() {
     const res = await this.$apiClient.getAirports();
@@ -309,7 +309,7 @@ export default class SearchFlight extends Vue {
       departure: this.departure.code,
       departure_time: dayjs(this.departureTime).toISOString(),
       arrival: this.arrival.code,
-      standardfare: "PT",
+      standardfare: "TG",
     };
     const url = `/flight?departure=${query.departure}&arrival=${query.arrival}&departure_time=${query.departure_time}&standardfare=${query.standardfare}`;
     this.$router.push(url);
