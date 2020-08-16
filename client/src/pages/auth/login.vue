@@ -7,7 +7,7 @@
         >Log in to your account</v-card-title>
         <v-card-subtitle
           class="d-flex justify-center text-body-1 mt-1 text-center"
-        >Sign in to your Gotadi account to book tickets with many great deals and get it done faster.</v-card-subtitle>
+        >Sign in to your account to book tickets with many great deals and get it done faster.</v-card-subtitle>
         <v-card-text class="mt-15">
           <v-row>
             <v-col cols="12" md="12">
@@ -100,8 +100,8 @@ export default class Login extends Vue {
   };
 
   userModel: any = {
-    email: "",
-    password: "",
+    email: "ngoctrinh@gmail.com",
+    password: "123123123",
   };
 
   email: String = "";
@@ -120,16 +120,18 @@ export default class Login extends Vue {
     // Todo call api login
 
     console.log(`data`, this.userModel);
-
-    this.$apiClient
-      .login(this.userModel)
-      .then((res: any) => {
-        console.log(res);
-        if (res && res.code === 200) {
-          this.$cookies.set("token", res.token);
-        }
-      })
-      .catch((e) => console.error(e));
+    this.$auth.loginWith("local", {
+      data: this.userModel,
+    });
+    // this.$apiClient
+    //   .login(this.userModel)
+    //   .then((res: any) => {
+    //     console.log(res);
+    //     if (res && res.code === 200) {
+    //       this.$cookies.set("token", res.token);
+    //     }
+    //   })
+    //   .catch((e) => console.error(e));
   }
 }
 </script>

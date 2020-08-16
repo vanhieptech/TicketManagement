@@ -134,6 +134,7 @@
           </v-col>
         </v-row>
         <v-row dense>
+          <!--
           <v-col v-for="flight in flights" :key="flight._id" cols="12">
             <v-card elevation="0" outlined>
               <v-card-title>
@@ -202,6 +203,62 @@
               </v-card-text>
             </v-card>
           </v-col>
+          -->
+          <v-col v-for="i in 5" :key="i" cols="12">
+            <v-card elevation="0" outlined>
+              <v-card-title>
+                <v-row dense>
+                  <v-col cols="12" md="7">
+                    <v-row dense>
+                      <v-col cols="12" sm="6" md="5" class="text-body-2">123 | Airbus A320</v-col>
+                      <v-col cols="12" sm="6" md="7">
+                        20:30
+                        <span>(CHM)</span>
+
+                        <img src="/image/path.png" alt />21:30
+                        <span>(NB)</span>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+
+                  <v-col cols="12" md="5">
+                    <v-row dense>
+                      <v-col cols="12" sm="6" md="6">
+                        <span class="text-body-2">
+                          2h •
+                          Direct flight
+                        </span>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
+                        <v-btn outlined>detail</v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-card-title>
+              <v-divider></v-divider>
+              <v-card-text class="py-0">
+                <v-row dense>
+                  <v-col cols="12" md="7" class="d-flex align-center">
+                    <v-row dense>
+                      <v-col cols="12" sm="6" md="5">Economy</v-col>
+                      <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
+                    </v-row>
+                  </v-col>
+                  <v-col cols="12" md="5" class="d-flex align-center">
+                    <v-row dense>
+                      <v-col cols="12" sm="6" md="6">
+                        <span class="font-weight-bold text-h6" style="color:#FF5722;">600000</span> &nbsp;VND
+                      </v-col>
+                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
+                        <v-btn color="primary" elevation="0">choice</v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-card>
+          </v-col>
         </v-row>
       </v-container>
     </div>
@@ -235,6 +292,7 @@ export default class Flight extends Vue {
         };
 
     this.flights = await this.flightRepo.getListFlights(query);
+
     console.log(`results flights`, this.flights);
   }
   getFlightTime(departureTime, arrivalTime) {

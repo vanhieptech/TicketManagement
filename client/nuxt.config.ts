@@ -33,6 +33,7 @@ const config: NuxtConfig = {
     'cookie-universal-nuxt',
     '@nuxtjs/style-resources',
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
     [
       'vue-sweetalert2/nuxt',
       {
@@ -95,7 +96,7 @@ const config: NuxtConfig = {
     },
   },
   router: {
-    middleware: [],
+    middleware: ['auth'],
     base: '/',
   },
   srcDir: process.cwd() + '/src/',
@@ -115,9 +116,41 @@ const config: NuxtConfig = {
   vuetify: {
     optionsPath: '~/static/theme/index.ts',
   },
-  // axios: {
-  //   debug: false
-  // }
+  axios: {
+    baseURL: process.env.API_ENDPOINT || 'http://localhost:4000',
+    proxyHeaders: false,
+    credentials: false,
+  },
+  auth: {
+    strategies: {
+      local: {
+        endpoints: {
+          login: {
+            url: '/api/user/login',
+            method: 'post',
+            propertyName: 'token',
+          },
+          user: {
+            url: '/api/user/auth',
+            method: 'get',
+            propertyName: 'user'
+          },
+          // tokenRequired: true,
+          logout: false,
+          tokenType: ''
+        }
+      },
+    },
+    // watchLoggedIn: false,
+    // redirect: {
+    //   // login: '/auth/login',
+    //   // login: '/auth/login',
+    //   // logout: '/',
+    //   // callback: '/',
+    //   login: false,
+    //   home: '/'
+    // }
+  },
 }
 
 export default config

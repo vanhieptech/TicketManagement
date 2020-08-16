@@ -1,15 +1,23 @@
 // example store index
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
-
+// import auth from '@nuxtjs/auth'
 export const state = () => ({
   things: [] as string[],
   name: 'Me',
+  // auth
 })
 
 export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
   name: (state) => state.name,
+  // isAuthenticated: (state) => {
+  //   return state.auth.loggedIn
+  // },
+
+  // loggedInUser: (state) => {
+  //   return state.auth.user
+  // }
 }
 
 export const mutations: MutationTree<RootState> = {
