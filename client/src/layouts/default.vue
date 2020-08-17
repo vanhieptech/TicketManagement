@@ -39,6 +39,15 @@
     <v-main>
       <nuxt />
     </v-main>
+
+    <v-footer class="d-flex justify-center">
+      <div>
+        &copy; {{ new Date().getFullYear() }} -
+        <span
+          class="font-weight-light ca"
+        >Power by AnhEmXaHoi Team</span>
+      </div>
+    </v-footer>
   </v-app>
 </template>
 

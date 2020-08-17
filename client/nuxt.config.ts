@@ -19,7 +19,7 @@ const config: NuxtConfig = {
     "endpoint": env.API_ENDPOINT,
   },
   head: HeadConfig,
-  loading: false, // using 'false' if you dont want using default loading
+  // loading: false, // using 'false' if you dont want using default loading
   css: ['~/static/styles.css'],
   styleResources: {
     scss: [],

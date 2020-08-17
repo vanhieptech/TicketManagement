@@ -1,2 +1,3 @@
 import getListFlights from './getListFlights'
-export { getListFlights }
+import getFlightDetail from './getFlightDetail'
+export { getListFlights, getFlightDetail }

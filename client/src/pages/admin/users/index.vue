@@ -7,7 +7,7 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
   layout: "admin",
 })
-export default class Admin extends Vue {}
+export default class UsersManagement extends Vue {}
 </script>
 
 <style scoped>

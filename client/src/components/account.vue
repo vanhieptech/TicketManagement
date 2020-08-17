@@ -30,6 +30,16 @@
           width="200"
           color="primary"
           elevation="0"
+          @click="$router.push('/admin')"
+        >Admin Dashboard</v-btn>
+      </v-list-item>
+      <v-list-item>
+        <v-btn
+          outlined
+          block
+          width="200"
+          color="primary"
+          elevation="0"
           @click="doLogout()"
         >My profile</v-btn>
       </v-list-item>

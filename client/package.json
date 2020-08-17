@@ -12,7 +12,8 @@
         "export": "nuxt-ts export",
         "serve": "nuxt-ts serve",
         "lint": "eslint --ext .ts,.js,.vue src/ --fix",
-        "test": "jest"
+        "test": "jest",
+        "publish-client": "cd ../ && git subtree push --prefix client heroku-ticket-client master || true"
     },
     "dependencies": {
         "@nuxt/typescript-runtime": "^1.0.0",
