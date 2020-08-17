@@ -1,8 +1,8 @@
 {
     "name": "vuetify",
     "version": "1.0.0",
-    "description": "Template vuetify app",
-    "author": "mHealth Technologies JSC",
+    "description": "Vuetify app",
+    "author": "HAXE TKPM",
     "license": "Private",
     "private": true,
     "scripts": {
