@@ -6,20 +6,34 @@ const ObjectId = require("mongoose").Types.ObjectId;
 
 module.exports = {
     getFlights: async(req, res) => {
-        if (req.query) {
+        console.log(req.query);
+        const query = req.query;
+        if (Object.keys(query).length > 0 && query.constructor === Object) {
             //Do querying thing
             //departure,arrival, departure_time, standardfare
             let finalFlights = [];
             let flights = [];
             try {
                 flights = await Flight.find({
-                    departure_time: req.query.departure_time,
-                }).populate({
-                    path: "departure arrival standardfare",
-                    populate: {
-                        path: "airline",
-                    },
-                });
+                        departure_time: {
+                            $gte: new Date(req.query.departure_time).toISOString(),
+                        },
+                        // departure_time: "2020-08-02T07:30:00.000Z",
+                    })
+                    .populate({
+                        path: "aircraft",
+                        select: "_id code airline seats",
+                        populate: {
+                            path: "airline",
+                            select: "_id name logo type seat_number price aircraft",
+                        },
+                    })
+                    .populate({
+                        path: "departure arrival standardfare",
+                        populate: {
+                            path: "airline",
+                        },
+                    });
             } catch (e) {
                 console.log(e);
             }
@@ -39,22 +53,27 @@ module.exports = {
                     });
                     let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
                     filterdFlightCopy.forEach((element) => {
+                        console.log(12, element.standardfare);
                         let durationMinute =
                             (new Date(element.arrival_time) -
                                 new Date(element.departure_time)) /
                             6000;
                         if (req.query.standardfare == "PT") {
                             element.price =
-                                durationMinute * element.standardfare[0].price_per_minute;
+                                durationMinute * element.standardfare ?
+                                element.standardfare[0].price_per_minute :
+                                9999;
                             finalFlights.push(element);
                         }
                         if (req.query.standardfare == "TG") {
                             element.price =
-                                durationMinute * element.standardfare[1].price_per_minute;
+                                durationMinute * element.standardfare ?
+                                element.standardfare[1].price_per_minute :
+                                9999;
                             finalFlights.push(element);
                         }
                     });
-
+                    console.log(finalFlights);
                     if (
                         req.query.filterPitStop &&
                         req.query.filterDeparture_Hour &&
@@ -82,6 +101,7 @@ module.exports = {
                             });
                         }
                         //  Filter airline
+
                         finalFlights = finalFlights.filter((element) => {
                             return (
                                 element.standardfare[0].airline.name.localeCompare(
@@ -101,7 +121,12 @@ module.exports = {
                     message: "Search successfully",
                     results: finalFlights,
                 });
+                return;
             }
+            res.status(400).send({
+                code: 400,
+                message: "Lost parameters to search",
+            });
         } else {
             Flight.find()
                 .select(
@@ -139,6 +164,7 @@ module.exports = {
                                 arrival: doc.arrival,
                                 pit_stop: doc.pit_stop,
                                 aircraft: doc.aircraft,
+                                price: 0,
                             };
                         }),
                     };

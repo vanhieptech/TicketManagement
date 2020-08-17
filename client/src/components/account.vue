@@ -5,13 +5,17 @@
     open-on-hover
     bottom
     left
-    offset-x
+    offset-y
     max-width="300"
   >
     <template v-slot:activator="{ on, attrs }">
-      <v-avatar v-bind="attrs" v-on="on">
-        <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
-      </v-avatar>
+      <v-btn color="info" dark text outlined rounded elevation="0" v-bind="attrs" v-on="on">
+        <v-avatar size="25">
+          <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+        </v-avatar>
+        &nbsp;
+        {{$auth.user.name}}
+      </v-btn>
     </template>
     <v-list>
       <v-list-item>
@@ -41,6 +45,9 @@
       </v-list-item>
     </v-list>
   </v-menu>
+  <!--
+  <p v-if="$auth.loggedIn" @click="doLogout()">{{$auth.user.name}}</p>
+  -->
   <v-menu v-else transition="slide-y-transition" open-on-hover bottom left offset-y max-width="300">
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="info" dark elevation="0" v-bind="attrs" v-on="on">Account</v-btn>
@@ -71,7 +78,9 @@
 import { Vue, Component } from "vue-property-decorator";
 @Component
 export default class Account extends Vue {
-  doLogout() {}
+  async doLogout() {
+    await this.$auth.logout();
+  }
 }
 </script>
 

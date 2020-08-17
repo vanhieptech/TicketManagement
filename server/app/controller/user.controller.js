@@ -259,7 +259,7 @@ module.exports = {
     },
     getUserByToken: (req, res) => {
         try {
-            let token = "";
+            let token = req.headers.authorization;
             const header = req.headers["authorization"];
             if (typeof header !== "undefined") {
                 const bearer = header.split(" ");

@@ -134,7 +134,6 @@
           </v-col>
         </v-row>
         <v-row dense>
-          <!--
           <v-col v-for="flight in flights" :key="flight._id" cols="12">
             <v-card elevation="0" outlined>
               <v-card-title>
@@ -203,7 +202,7 @@
               </v-card-text>
             </v-card>
           </v-col>
-          -->
+          <!--
           <v-col v-for="i in 5" :key="i" cols="12">
             <v-card elevation="0" outlined>
               <v-card-title>
@@ -259,6 +258,7 @@
               </v-card-text>
             </v-card>
           </v-col>
+          -->
         </v-row>
       </v-container>
     </div>
@@ -281,6 +281,7 @@ export default class Flight extends Vue {
     { value: false, title: "18:00 - 24:00" },
   ];
   value: any = "";
+
   async mounted() {
     const query = this.$route.query
       ? this.$route.query
@@ -292,14 +293,17 @@ export default class Flight extends Vue {
         };
 
     this.flights = await this.flightRepo.getListFlights(query);
-
     console.log(`results flights`, this.flights);
   }
   getFlightTime(departureTime, arrivalTime) {
     console.log(departureTime);
     const time = dayjs(arrivalTime).diff(departureTime, "minute");
 
-    return time / 60 + "h" + (time % 60 === 0 ? "00" : time % 60);
+    return (
+      (time / 60.0).toString().split(".")[0] +
+      "h" +
+      (time % 60 === 0 ? "00" : time % 60)
+    );
   }
 }
 </script>

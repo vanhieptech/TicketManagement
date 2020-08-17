@@ -171,15 +171,15 @@ export default class SignUp extends Vue {
     this.$apiClient
       .signUp(this.userModel)
       .then((res) => {
-        console.log(res);
-        if (res && res.code === 200) {
+        console.log(res && res.code === 201);
+        if (res && res.code === 201) {
           this.$swal(
             "Great!",
             "You have been successfully registered!",
             "success"
           );
-          this.$router.push("/auth/login");
         }
+        this.$router.push("/auth/login");
       })
       .catch((e) => console.error(e));
   }
