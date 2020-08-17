@@ -29,7 +29,11 @@ module.exports = {
                         },
                     })
                     .populate({
-                        path: "departure arrival standardfare",
+                        path: "standardfare",
+                        select: "_id price_per_minute",
+                    })
+                    .populate({
+                        path: "departure arrival",
                         populate: {
                             path: "airline",
                         },
@@ -53,27 +57,30 @@ module.exports = {
                     });
                     let filterdFlightCopy = JSON.parse(JSON.stringify(filterdFlight));
                     filterdFlightCopy.forEach((element) => {
-                        console.log(12, element.standardfare);
                         let durationMinute =
                             (new Date(element.arrival_time) -
                                 new Date(element.departure_time)) /
                             6000;
                         if (req.query.standardfare == "PT") {
                             element.price =
-                                durationMinute * element.standardfare ?
-                                element.standardfare[0].price_per_minute :
-                                9999;
+                                durationMinute *
+                                (element.standardfare ?
+                                    element.standardfare[0].price_per_minute :
+                                    99);
+                            console.log(12, element.price);
                             finalFlights.push(element);
                         }
                         if (req.query.standardfare == "TG") {
                             element.price =
-                                durationMinute * element.standardfare ?
-                                element.standardfare[1].price_per_minute :
-                                9999;
+                                durationMinute *
+                                (element.standardfare && element.standardfare.length > 1 ?
+                                    element.standardfare[1].price_per_minute :
+                                    99);
+                            console.log(element.standardfare, 12, element.price);
                             finalFlights.push(element);
                         }
                     });
-                    console.log(finalFlights);
+                    // console.log(finalFlights);
                     if (
                         req.query.filterPitStop &&
                         req.query.filterDeparture_Hour &&
