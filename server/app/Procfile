@@ -1,1 +1,1 @@
-web: npm workspace server/app start
+web: yarn workspace server/app start

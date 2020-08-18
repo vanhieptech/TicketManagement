@@ -8,6 +8,10 @@
         "server/app",
         "client"
     ],
+    "engines": {
+        "node": "10.15.3",
+        "yarn": "1.12.3"
+    },
     "scripts": {
         "deploy-api": "git subtree push --prefix server/app api master",
         "deploy-web": "git push https://git.heroku.com/web-client-tk.git master"
