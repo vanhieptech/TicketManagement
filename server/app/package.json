@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "start": "nodemon app.js",
-        "publish-server": "cd ../../ && git subtree push --prefix server/app heroku-backend master  || true"
+        "publish-server": "cd ../../ && git subtree push --prefix server/app api master  || true"
     },
     "dependencies": {
         "bcrypt": "^5.0.0",

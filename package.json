@@ -1,12 +1,15 @@
 {
-  "name": "heroku-monorepo",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "private": true,
-  "workspaces": ["server/app", "client"],
-  "scripts": {
-    "deploy-api": "git push https://git.heroku.com/api-tk.git master",
-    "deploy-web": "git push https://git.heroku.com/web-client-tk.git master"
-  }
+    "name": "heroku-monorepo",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "private": true,
+    "workspaces": [
+        "server/app",
+        "client"
+    ],
+    "scripts": {
+        "deploy-api": "git subtree push --prefix server/app api master",
+        "deploy-web": "git push https://git.heroku.com/web-client-tk.git master"
+    }
 }
