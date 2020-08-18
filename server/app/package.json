@@ -4,6 +4,8 @@
     "private": true,
     "scripts": {
         "start": "nodemon app.js",
+        "build": "npm install && nodemon app.js",
+        "heroku-postbuild": "npm run build",
         "publish-server": "cd ../../ && git subtree push --prefix server/app api master  || true"
     },
     "dependencies": {
