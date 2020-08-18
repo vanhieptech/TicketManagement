@@ -3,7 +3,9 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "start": "nodemon app.js"
+        "start": "nodemon app.js",
+        "heroku-postbuild": "npm run build",
+        "publish-server": "cd ../../ && git subtree push --prefix server/app api master  || true"
     },
     "dependencies": {
         "bcrypt": "^5.0.0",

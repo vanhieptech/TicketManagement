@@ -71,11 +71,15 @@ export default class CheckoutFlight extends Vue {
       complete: false,
     },
   ];
+  flight: any = "";
   @Watch("steps")
   stepsChanged(val) {
     if (this.currentStep > val) {
       this.currentStep = val;
     }
+  }
+  mounted() {
+    this.getFlightDetail();
   }
   onInput(val) {
     console.log(val);
@@ -92,6 +96,13 @@ export default class CheckoutFlight extends Vue {
       this.currentStep = 1;
     } else {
       this.currentStep = step.number + 1;
+    }
+  }
+  async getFlightDetail() {
+    const flightId = this.$route.query.flightId;
+    if (flightId) {
+      this.flight = (await this.$apiClient.getFlightDetail(flightId)).results;
+      console.log(`this.flight`, this.flight);
     }
   }
 }

@@ -19,7 +19,7 @@ const config: NuxtConfig = {
     "endpoint": env.API_ENDPOINT,
   },
   head: HeadConfig,
-  loading: false, // using 'false' if you dont want using default loading
+  // loading: false, // using 'false' if you dont want using default loading
   css: ['~/static/styles.css'],
   styleResources: {
     scss: [],
@@ -117,7 +117,7 @@ const config: NuxtConfig = {
     optionsPath: '~/static/theme/index.ts',
   },
   axios: {
-    baseURL: process.env.API_ENDPOINT || 'http://localhost:4000',
+    baseURL: process.env.API_ENDPOINT || 'https://api-lvh.herokuapp.com',
     proxyHeaders: false,
     credentials: false,
   },

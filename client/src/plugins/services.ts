@@ -7,6 +7,7 @@ declare module 'vue/types/vue' {
   interface Vue {
     $apiClient: {
       getListFlights(data: any): Promise<IResp>
+      getFlightDetail(id: any): Promise<IResp>
       getAirports(): Promise<IResp>
       login(data: any): Promise<IResp>
       signUp(data: any): Promise<IResp>
@@ -28,6 +29,7 @@ declare module '@nuxt/types/app' {
   interface NuxtAppOptions {
     $apiClient: {
       getListFlights(data: any): Promise<IResp>
+      getFlightDetail(id: any): Promise<IResp>
       getAirports(): Promise<IResp>
       login(data: any): Promise<IResp>
       signUp(data: any): Promise<IResp>
@@ -50,6 +52,7 @@ declare module 'vuex/types/index' {
   interface Store<S> {
     $apiClient: {
       getListFlights(data: any): Promise<IResp>
+      getFlightDetail(id: any): Promise<IResp>
       getAirports(): Promise<IResp>
       login(data: any): Promise<IResp>
       signUp(data: any): Promise<IResp>
@@ -72,6 +75,7 @@ const pluginServices: Plugin = ({ app, $config }: Context, inject) => {
   const authen = AuthenUser.getInstance(app)
   inject('apiClient', {
     getListFlights: (data: any) => flight.getListFlights(app, data),
+    getFlightDetail: (id: any) => flight.getFlightDetail(app, id),
     getAirports: () => getAirports(app),
     login: (data: any) => auth.login(app, data),
     signUp: (data: any) => auth.signUp(app, data),

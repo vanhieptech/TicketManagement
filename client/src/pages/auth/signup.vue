@@ -75,6 +75,7 @@
             <v-col cols="12" md="4">
               <v-btn
                 :disabled="!valid"
+                :loading="isLoading"
                 color="primary"
                 x-large
                 class="mr-4"
@@ -154,10 +155,11 @@ export default class SignUp extends Vue {
   confirmPassword: String = "";
   showPassword: Boolean = false;
   showConfirmPassword: Boolean = false;
-
+  isLoading: Boolean = false;
   mounted() {}
 
   validate() {
+    this.isLoading = true;
     const isValid = (this.$refs.form as Vue & {
       validate: () => boolean;
     }).validate();
@@ -179,9 +181,13 @@ export default class SignUp extends Vue {
             "success"
           );
         }
+        this.isLoading = false;
         this.$router.push("/auth/login");
       })
-      .catch((e) => console.error(e));
+      .catch((e) => {
+        console.error(e);
+        this.isLoading = false;
+      });
   }
 }
 </script>

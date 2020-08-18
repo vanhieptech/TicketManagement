@@ -52,6 +52,7 @@
                 class="mr-4 text-uppercase"
                 min-width="200"
                 elevation="0"
+                :loading="isLoading"
                 block
                 @click="validate"
               >login</v-btn>
@@ -107,10 +108,11 @@ export default class Login extends Vue {
   email: String = "";
   password: String = "";
   showPassword: Boolean = false;
-
+  isLoading: Boolean = false;
   mounted() {}
 
   validate() {
+    this.isLoading = true;
     const isValid = (this.$refs.form as Vue & {
       validate: () => boolean;
     }).validate();
@@ -120,10 +122,17 @@ export default class Login extends Vue {
     // Todo call api login
 
     console.log(`data`, this.userModel);
-    this.$auth.loginWith("local", {
-      data: this.userModel,
-    });
-    this.$router.push("/");
+    this.$auth
+      .loginWith("local", {
+        data: this.userModel,
+      })
+      .then(() => {
+        this.isLoading = false;
+        this.$router.push("/");
+      })
+      .catch(() => {
+        this.isLoading = false;
+      });
     // this.$apiClient
     //   .login(this.userModel)
     //   .then((res: any) => {
