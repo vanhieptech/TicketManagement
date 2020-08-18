@@ -117,7 +117,7 @@ const config: NuxtConfig = {
     optionsPath: '~/static/theme/index.ts',
   },
   axios: {
-    baseURL: process.env.API_ENDPOINT || 'https://ticket-lvh.herokuapp.com',
+    baseURL: process.env.API_ENDPOINT || 'https://api-lvh.herokuapp.com',
     proxyHeaders: false,
     credentials: false,
   },
