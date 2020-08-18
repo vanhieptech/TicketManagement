@@ -136,81 +136,93 @@
           </v-col>
         </v-row>
         <v-row dense>
-          <v-col v-for="flight in flights" :key="flight._id" cols="12">
-            <v-card elevation="0" class="my-3" outlined>
-              <v-card-title>
-                <v-row dense>
-                  <v-col cols="12" md="7">
-                    <v-row dense>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="5"
-                        class="text-body-2"
-                      >{{flight.code}} | Airbus A320</v-col>
-                      <v-col cols="12" sm="6" md="7">
-                        {{flight.departure_time | formatTime("HH:mm")}}
-                        <span
-                          v-if="flight.departure"
-                        >({{flight.departure.code}})</span>
+          <template v-if="isLoading">
+            <v-col v-for="i in 5" :key="i" cols="12">
+              <v-skeleton-loader
+                ref="skeleton"
+                type="list-item-two-line, divider, actions "
+                class="mx-auto my-3"
+              ></v-skeleton-loader>
+            </v-col>
+          </template>
+          <template v-else-if="flights && flights.length > 0">
+            <v-col v-for="flight in flights" :key="flight._id" cols="12">
+              <v-card elevation="0" class="my-3" outlined>
+                <v-card-title>
+                  <v-row dense>
+                    <v-col cols="12" md="7">
+                      <v-row dense>
+                        <v-col
+                          cols="12"
+                          sm="6"
+                          md="5"
+                          class="text-body-2"
+                        >{{flight.code}} | Airbus A320</v-col>
+                        <v-col cols="12" sm="6" md="7">
+                          {{flight.departure_time | formatTime("HH:mm")}}
+                          <span
+                            v-if="flight.departure"
+                          >({{flight.departure.code}})</span>
 
-                        <img src="/image/path.png" alt />
-                        {{flight.arrival_time | formatTime("HH:mm")}}
-                        <span
-                          v-if="flight.arrival"
-                        >({{flight.arrival.code}})</span>
-                      </v-col>
-                    </v-row>
-                  </v-col>
+                          <img src="/image/path.png" alt />
+                          {{flight.arrival_time | formatTime("HH:mm")}}
+                          <span
+                            v-if="flight.arrival"
+                          >({{flight.arrival.code}})</span>
+                        </v-col>
+                      </v-row>
+                    </v-col>
 
-                  <v-col cols="12" md="5">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span class="text-body-2">
-                          {{getFlightTime(flight.departure_time,flight.arrival_time)}} •
-                          Direct flight
-                        </span>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end align-center">
-                        <v-btn icon>
-                          <v-icon color="info">mdi-information</v-icon>
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-title>
-              <v-divider></v-divider>
-              <v-card-text class="py-0">
-                <v-row>
-                  <v-col cols="12" md="7" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="5">Economy</v-col>
-                      <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="12" md="5" class="d-flex align-center">
-                    <v-row dense>
-                      <v-col cols="12" sm="6" md="6">
-                        <span
-                          class="font-weight-bold text-h6"
-                          style="color:#FF5722;"
-                        >{{flight.price}}</span> &nbsp;VND
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
-                        <v-btn
-                          color="primary"
-                          block
-                          elevation="5"
-                          @click="goToCheckout(flight)"
-                        >choose</v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </v-card>
-          </v-col>
+                    <v-col cols="12" md="5">
+                      <v-row dense>
+                        <v-col cols="12" sm="6" md="6">
+                          <span class="text-body-2">
+                            {{getFlightTime(flight.departure_time,flight.arrival_time)}} •
+                            Direct flight
+                          </span>
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6" class="d-flex justify-end align-center">
+                          <v-btn icon>
+                            <v-icon color="info">mdi-information</v-icon>
+                          </v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-card-title>
+                <v-divider></v-divider>
+                <v-card-text class="py-0">
+                  <v-row>
+                    <v-col cols="12" md="7" class="d-flex align-center">
+                      <v-row dense>
+                        <v-col cols="12" sm="6" md="5">Economy</v-col>
+                        <v-col cols="12" sm="6" md="7">Luggage & ticket conditions</v-col>
+                      </v-row>
+                    </v-col>
+                    <v-col cols="12" md="5" class="d-flex align-center">
+                      <v-row dense>
+                        <v-col cols="12" sm="6" md="6">
+                          <span
+                            class="font-weight-bold text-h6"
+                            style="color:#FF5722;"
+                          >{{flight.price}}</span> &nbsp;VND
+                        </v-col>
+                        <v-col cols="12" sm="6" md="6" class="d-flex justify-end">
+                          <v-btn
+                            color="primary"
+                            block
+                            elevation="5"
+                            @click="goToCheckout(flight)"
+                          >choose</v-btn>
+                        </v-col>
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </template>
+          <v-img v-else src="/image/logo.png" alt></v-img>
         </v-row>
       </v-container>
     </div>
@@ -253,6 +265,7 @@ export default class Flight extends Vue {
     // this.getOrdersList();
   }
   async mounted() {
+    this.isLoading = true;
     const query = this.$route.query
       ? this.$route.query
       : {
@@ -263,6 +276,7 @@ export default class Flight extends Vue {
         };
 
     this.flights = await this.flightRepo.getListFlights(query);
+    this.isLoading = false;
     console.log(`results flights`, this.flights);
   }
   getFlightTime(departureTime, arrivalTime) {
