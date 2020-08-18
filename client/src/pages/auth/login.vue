@@ -112,11 +112,11 @@ export default class Login extends Vue {
   mounted() {}
 
   validate() {
-    this.isLoading = true;
     const isValid = (this.$refs.form as Vue & {
       validate: () => boolean;
     }).validate();
     if (!isValid) return;
+    this.isLoading = true;
     this.userModel.email = this.email;
     this.userModel.password = this.password;
     // Todo call api login
