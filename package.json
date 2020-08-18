@@ -1,5 +1,5 @@
 {
-    "name": "heroku-monorepo",
+    "name": "heroku",
     "version": "1.0.0",
     "main": "index.js",
     "license": "MIT",
@@ -13,7 +13,7 @@
         "yarn": "1.12.3"
     },
     "scripts": {
-        "deploy-api": "git subtree push --prefix server/app api master",
+        "deploy-api": "git subtree push --prefix server/app api-ticket master",
         "deploy-web": "git subtree push --prefix client web-ticket master"
     }
 }
