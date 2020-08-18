@@ -27,6 +27,10 @@ const config: NuxtConfig = {
   plugins: [
     '~/plugins/services.ts',
     '~/plugins/utils.ts',
+    '~/plugins/base.js',
+    '~/plugins/chartist.js',
+    '~/plugins/components.js',
+    { src: '~/plugins/ckeditor.js', mode: 'client' },
   ],
   modules: [
     ['@nuxtjs/robots', { UserAgent: '*', Disallow: '*' }],

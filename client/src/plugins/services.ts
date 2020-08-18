@@ -21,7 +21,9 @@ declare module 'vue/types/vue' {
       redirect(token: string): any
     }
     $apiCall(options: IApiCallOptions, cb?: any): Promise<IResp>
-    $auth: any
+    $auth: any,
+
+    $chartist: any
   }
 }
 
@@ -44,7 +46,8 @@ declare module '@nuxt/types/app' {
     }
 
     $apiCall(options: IApiCallOptions, cb?: any): Promise<IResp>
-    $auth: any
+    $auth: any,
+    $chartist: any
   }
 }
 
@@ -66,7 +69,9 @@ declare module 'vuex/types/index' {
       redirect(token: string): any
     }
     $apiCall(options: IApiCallOptions, cb?: any): Promise<IResp>
-    $auth: any
+    $auth: any,
+
+    $chartist: any
 
   }
 }

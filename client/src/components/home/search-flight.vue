@@ -242,6 +242,7 @@
           min-width="200"
           min-height="50"
           rounded
+          :loading="isLoading"
           large
           @click="onSearchFlights"
         >Search flight</v-btn>
@@ -285,6 +286,7 @@ export default class SearchFlight extends Vue {
   arrival: any = "";
   standardfare: any = "";
   loading: Boolean = false;
+  isLoading: Boolean = false;
   dataSearches: Object = {
     departure: "",
     departureTime: "",
@@ -301,6 +303,7 @@ export default class SearchFlight extends Vue {
   items: any = null;
   save() {}
   onSearchFlights() {
+    this.isLoading = true;
     if (!this.departure || !this.departure.code) return;
     if (!this.arrival || !this.arrival.code) return;
     // TODO: validate value before search
@@ -313,6 +316,7 @@ export default class SearchFlight extends Vue {
     };
     const url = `/flight?departure=${query.departure}&arrival=${query.arrival}&departure_time=${query.departure_time}&standardfare=${query.standardfare}`;
     this.$router.push(url);
+    this.isLoading = false;
   }
 }
 </script>
