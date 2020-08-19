@@ -34,7 +34,10 @@
         "vue-property-decorator": "^9.0.0",
         "vue-swal": "^1.0.0",
         "vue-sweetalert2": "^3.0.6",
-        "vuelidate": "^0.7.5"
+        "vuelidate": "^0.7.5",
+        "vue-chartist": "^2.3.1",
+        "@ckeditor/ckeditor5-build-classic": "^20.0.0",
+        "@ckeditor/ckeditor5-vue": "^1.0.1"
     },
     "devDependencies": {
         "@nuxt/types": "^2.14.0",
@@ -57,6 +60,12 @@
         "jest": "^26.0.1",
         "prettier": "^2.0.5",
         "ts-jest": "^26.1.4",
-        "vue-jest": "^3.0.4"
+        "vue-jest": "^3.0.4",
+        "less": "^3.12.2",
+        "less-loader": "^6.2.0",
+        "sass": "^1.26.10",
+        "sass-loader": "^7.3.1",
+        "stylus": "^0.54.8",
+        "stylus-loader": "^3.0.2"
     }
 }

@@ -20,79 +20,83 @@
                   </v-radio-group>
                 </v-card-title>
                 <v-card-text class="pt-1">
-                  <v-row dense>
-                    <v-col cols="12" sm="6" md="6">
-                      <div class="d-flex flex-row pt-2 pa-0" style="border: 1px solid #EEEEEE">
-                        <v-autocomplete
-                          v-model="departure"
-                          :loading="loading"
-                          :items="locations"
-                          item-text="name"
-                          item-value="code"
-                          prepend-inner-icon="mdi-map-marker"
-                          placeholder="Thành Phố / Sân bay"
-                          label="From"
-                          flat
-                          hide-no-data
-                          hide-details
-                          return-object
-                        >
-                          <template v-slot:item="data">
-                            <p>
-                              {{data.item.name}}
-                              <strong>({{data.item.code}})</strong>
-                            </p>
-                          </template>
-                        </v-autocomplete>
-                        <v-autocomplete
-                          v-model="arrival"
-                          :loading="loading"
-                          :items="locations"
-                          item-text="name"
-                          item-value="code"
-                          placeholder="Thành Phố / Sân bay"
-                          label="To"
-                          flat
-                          hide-no-data
-                          return-object
-                        >
-                          <template v-slot:item="data">
-                            <p>
-                              {{data.item.name}}
-                              <strong>({{data.item.code}})</strong>
-                            </p>
-                          </template>
-                        </v-autocomplete>
-                      </div>
-                    </v-col>
+                  <v-form ref="form" v-model="valid" lazy-validation>
+                    <v-row dense>
+                      <v-col cols="12" sm="6" md="6">
+                        <div class="d-flex flex-row pt-2 pa-0" style="border: 1px solid #EEEEEE">
+                          <v-autocomplete
+                            v-model="departure"
+                            :loading="loading"
+                            :items="locations"
+                            item-text="name"
+                            item-value="code"
+                            prepend-inner-icon="mdi-map-marker"
+                            placeholder="Thành Phố / Sân bay"
+                            :rules="[rules.required]"
+                            label="From"
+                            flat
+                            hide-no-data
+                            hide-details
+                            return-object
+                          >
+                            <template v-slot:item="data">
+                              <p>
+                                {{data.item.name}}
+                                <strong>({{data.item.code}})</strong>
+                              </p>
+                            </template>
+                          </v-autocomplete>
+                          <v-autocomplete
+                            v-model="arrival"
+                            :loading="loading"
+                            :items="locations"
+                            :rules="[rules.required]"
+                            item-text="name"
+                            item-value="code"
+                            placeholder="Thành Phố / Sân bay"
+                            label="To"
+                            flat
+                            hide-no-data
+                            hide-details
+                            return-object
+                          >
+                            <template v-slot:item="data">
+                              <p>
+                                {{data.item.name}}
+                                <strong>({{data.item.code}})</strong>
+                              </p>
+                            </template>
+                          </v-autocomplete>
+                        </div>
+                      </v-col>
 
-                    <v-col cols="12" sm="6" md="4">
-                      <div class="pt-2 pa-0" style="border: 1px solid #EEEEEE">
-                        <v-menu
-                          v-model="menu"
-                          :close-on-content-click="false"
-                          :nudge-right="40"
-                          transition="scale-transition"
-                          offset-y
-                          min-width="290px"
-                        >
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                              v-model="departureTime"
-                              label="Date"
-                              prepend-icon="event"
-                              readonly
-                              hide-details
-                              v-bind="attrs"
-                              v-on="on"
-                            ></v-text-field>
-                          </template>
-                          <v-date-picker v-model="departureTime" no-title @input="menu2 = false"></v-date-picker>
-                        </v-menu>
-                      </div>
-                    </v-col>
-                    <v-col cols="12" sm="6" md="2">
-                      <!--
+                      <v-col cols="12" sm="6" md="4">
+                        <div class="pt-2 pa-0" style="border: 1px solid #EEEEEE">
+                          <v-menu
+                            v-model="menu"
+                            :close-on-content-click="false"
+                            :nudge-right="40"
+                            transition="scale-transition"
+                            offset-y
+                            min-width="290px"
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                v-model="departureTime"
+                                label="Date"
+                                prepend-icon="event"
+                                readonly
+                                hide-details
+                                v-bind="attrs"
+                                v-on="on"
+                              ></v-text-field>
+                            </template>
+                            <v-date-picker v-model="departureTime" no-title @input="menu2 = false"></v-date-picker>
+                          </v-menu>
+                        </div>
+                      </v-col>
+                      <v-col cols="12" sm="6" md="2">
+                        <!--
                         <v-combobox
                           v-model="select"
                           :items="items"
@@ -126,109 +130,122 @@
                           placeholder="Passenger"
                           multiple
                         ></v-select>
-                      -->
-                      <div class="pt-2 pa-0" style="border: 1px solid #EEEEEE">
-                        <v-menu
-                          v-model="menuPassenger"
-                          :close-on-content-click="false"
-                          :nudge-width="200"
-                          offset-y
-                          left
-                        >
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-text-field
-                              label="Passenger"
-                              placeholder="Thành Phố / Sân bay"
-                              readonly
-                              hide-details
-                              v-bind="attrs"
-                              v-on="on"
-                            >
-                              <template v-slot:append>
-                                <v-icon :class="menuPassenger? 'mdi-flip-v':''">mdi-chevron-down</v-icon>
-                              </template>
-                            </v-text-field>
-                          </template>
+                        -->
+                        <div class="pt-2 pa-0" style="border: 1px solid #EEEEEE">
+                          <v-menu
+                            v-model="menuPassenger"
+                            :close-on-content-click="false"
+                            :nudge-width="200"
+                            offset-y
+                            left
+                          >
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-text-field
+                                label="Passenger"
+                                placeholder="Thành Phố / Sân bay"
+                                readonly
+                                hide-details
+                                v-bind="attrs"
+                                v-on="on"
+                              >
+                                <template v-slot:append>
+                                  <v-icon :class="menuPassenger? 'mdi-flip-v':''">mdi-chevron-down</v-icon>
+                                </template>
+                              </v-text-field>
+                            </template>
 
-                          <v-card>
-                            <v-list dense>
-                              <v-list-item dense>
-                                <v-list-item-content>
-                                  <v-list-item-title>Người lớn</v-list-item-title>
-                                  <v-list-item-subtitle>(>12 tuổi)</v-list-item-subtitle>
-                                </v-list-item-content>
+                            <v-card>
+                              <v-list dense>
+                                <v-list-item dense>
+                                  <v-list-item-content>
+                                    <v-list-item-title>Người lớn</v-list-item-title>
+                                    <v-list-item-subtitle>(>12 tuổi)</v-list-item-subtitle>
+                                  </v-list-item-content>
 
-                                <v-list-item-action
-                                  class="d-flex flex-row justify-center align-center"
-                                >
-                                  <v-btn icon :disabled="adultNumeric<=0" @click="adultNumeric--">
-                                    <v-icon>mdi-minus-circle-outline</v-icon>
-                                  </v-btn>
-                                  <v-spacer></v-spacer>
-                                  <span
-                                    class="font-weight-bold text-title text-center"
-                                    style="width:30px;"
-                                  >{{ adultNumeric}}</span>
-                                  <v-spacer></v-spacer>
-                                  <v-btn icon :disabled="adultNumeric>=10" @click="adultNumeric++">
-                                    <v-icon>mdi-plus-circle-outline</v-icon>
-                                  </v-btn>
-                                </v-list-item-action>
-                              </v-list-item>
-                              <v-divider></v-divider>
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-title>Người lớn</v-list-item-title>
-                                  <v-list-item-subtitle>(>12 tuổi)</v-list-item-subtitle>
-                                </v-list-item-content>
+                                  <v-list-item-action
+                                    class="d-flex flex-row justify-center align-center"
+                                  >
+                                    <v-btn icon :disabled="adultNumeric<=0" @click="adultNumeric--">
+                                      <v-icon>mdi-minus-circle-outline</v-icon>
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <span
+                                      class="font-weight-bold text-title text-center"
+                                      style="width:30px;"
+                                    >{{ adultNumeric}}</span>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                      icon
+                                      :disabled="adultNumeric>=10"
+                                      @click="adultNumeric++"
+                                    >
+                                      <v-icon>mdi-plus-circle-outline</v-icon>
+                                    </v-btn>
+                                  </v-list-item-action>
+                                </v-list-item>
+                                <v-divider></v-divider>
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-list-item-title>Người lớn</v-list-item-title>
+                                    <v-list-item-subtitle>(>12 tuổi)</v-list-item-subtitle>
+                                  </v-list-item-content>
 
-                                <v-list-item-action
-                                  class="d-flex flex-row justify-center align-center"
-                                >
-                                  <v-btn icon :disabled="adultNumeric<=0" @click="adultNumeric--">
-                                    <v-icon>mdi-minus-circle-outline</v-icon>
-                                  </v-btn>
-                                  <v-spacer></v-spacer>
-                                  <span
-                                    class="font-weight-bold text-title text-center"
-                                    style="width:30px;"
-                                  >{{ adultNumeric}}</span>
-                                  <v-spacer></v-spacer>
-                                  <v-btn icon :disabled="adultNumeric>=10" @click="adultNumeric++">
-                                    <v-icon>mdi-plus-circle-outline</v-icon>
-                                  </v-btn>
-                                </v-list-item-action>
-                              </v-list-item>
-                              <v-divider></v-divider>
-                              <v-list-item>
-                                <v-list-item-content>
-                                  <v-list-item-title>Người lớn</v-list-item-title>
-                                  <v-list-item-subtitle>(>12 tuổi)</v-list-item-subtitle>
-                                </v-list-item-content>
+                                  <v-list-item-action
+                                    class="d-flex flex-row justify-center align-center"
+                                  >
+                                    <v-btn icon :disabled="adultNumeric<=0" @click="adultNumeric--">
+                                      <v-icon>mdi-minus-circle-outline</v-icon>
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <span
+                                      class="font-weight-bold text-title text-center"
+                                      style="width:30px;"
+                                    >{{ adultNumeric}}</span>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                      icon
+                                      :disabled="adultNumeric>=10"
+                                      @click="adultNumeric++"
+                                    >
+                                      <v-icon>mdi-plus-circle-outline</v-icon>
+                                    </v-btn>
+                                  </v-list-item-action>
+                                </v-list-item>
+                                <v-divider></v-divider>
+                                <v-list-item>
+                                  <v-list-item-content>
+                                    <v-list-item-title>Người lớn</v-list-item-title>
+                                    <v-list-item-subtitle>(>12 tuổi)</v-list-item-subtitle>
+                                  </v-list-item-content>
 
-                                <v-list-item-action
-                                  class="d-flex flex-row justify-center align-center"
-                                >
-                                  <v-btn icon :disabled="adultNumeric<=0" @click="adultNumeric--">
-                                    <v-icon>mdi-minus-circle-outline</v-icon>
-                                  </v-btn>
-                                  <v-spacer></v-spacer>
-                                  <span
-                                    class="font-weight-bold text-title text-center"
-                                    style="width:30px;"
-                                  >{{ adultNumeric}}</span>
-                                  <v-spacer></v-spacer>
-                                  <v-btn icon :disabled="adultNumeric>=10" @click="adultNumeric++">
-                                    <v-icon>mdi-plus-circle-outline</v-icon>
-                                  </v-btn>
-                                </v-list-item-action>
-                              </v-list-item>
-                            </v-list>
-                          </v-card>
-                        </v-menu>
-                      </div>
-                    </v-col>
-                  </v-row>
+                                  <v-list-item-action
+                                    class="d-flex flex-row justify-center align-center"
+                                  >
+                                    <v-btn icon :disabled="adultNumeric<=0" @click="adultNumeric--">
+                                      <v-icon>mdi-minus-circle-outline</v-icon>
+                                    </v-btn>
+                                    <v-spacer></v-spacer>
+                                    <span
+                                      class="font-weight-bold text-title text-center"
+                                      style="width:30px;"
+                                    >{{ adultNumeric}}</span>
+                                    <v-spacer></v-spacer>
+                                    <v-btn
+                                      icon
+                                      :disabled="adultNumeric>=10"
+                                      @click="adultNumeric++"
+                                    >
+                                      <v-icon>mdi-plus-circle-outline</v-icon>
+                                    </v-btn>
+                                  </v-list-item-action>
+                                </v-list-item>
+                              </v-list>
+                            </v-card>
+                          </v-menu>
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-form>
                 </v-card-text>
               </v-card>
             </v-col>
@@ -285,11 +302,16 @@ export default class SearchFlight extends Vue {
   arrival: any = "";
   standardfare: any = "";
   loading: Boolean = false;
+  isLoading: Boolean = false;
   dataSearches: Object = {
     departure: "",
     departureTime: "",
     arrival: "",
     standardfare: "TG",
+  };
+  rules: any = {
+    required: (value) => !!value || "Required.",
+    min: (v) => v.length >= 8 || "Min 8 characters",
   };
   async mounted() {
     const res = await this.$apiClient.getAirports();
@@ -301,6 +323,11 @@ export default class SearchFlight extends Vue {
   items: any = null;
   save() {}
   onSearchFlights() {
+    const isValid = (this.$refs.form as Vue & {
+      validate: () => boolean;
+    }).validate();
+    if (!isValid) return;
+    this.isLoading = true;
     if (!this.departure || !this.departure.code) return;
     if (!this.arrival || !this.arrival.code) return;
     // TODO: validate value before search
@@ -313,6 +340,7 @@ export default class SearchFlight extends Vue {
     };
     const url = `/flight?departure=${query.departure}&arrival=${query.arrival}&departure_time=${query.departure_time}&standardfare=${query.standardfare}`;
     this.$router.push(url);
+    this.isLoading = false;
   }
 }
 </script>
