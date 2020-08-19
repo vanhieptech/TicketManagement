@@ -1,6 +1,0 @@
-**
-!configs
-!src
-!default.env
-!*.ts
-!*.json
